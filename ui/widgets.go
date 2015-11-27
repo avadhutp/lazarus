@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+
 	"github.com/avadhutp/lazarus/geddit"
 	"github.com/gizak/termui"
 )
@@ -19,8 +20,15 @@ func SongsWidget(lst geddit.Listing) *termui.List {
 	w.Items = songs
 	w.BorderLabel = "Song list"
 	w.Height = len(songs)
-	w.Width = 100
 	w.Y = 0
 
 	return w
+}
+
+func QuitWidget() *termui.Par {
+	quit := termui.NewPar("[Press q to quit Lazarus.](fg-red)")
+	quit.Height = 1
+	quit.Border = false
+
+	return quit
 }
