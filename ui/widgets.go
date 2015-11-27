@@ -32,7 +32,7 @@ func songsWidget() *termui.List {
 	w := termui.NewList()
 	w.Items = []string{"Downloading..."}
 	w.BorderLabel = "Song list"
-	w.Height = 3
+	w.Height = 5
 
 	return w
 }
@@ -41,7 +41,7 @@ func downloadWidget() *termui.List {
 	d := termui.NewList()
 	d.Items = []string{"Waiting to download..."}
 	d.Border = false
-	d.Height = 5
+	d.Height = 10
 	d.PaddingTop, d.PaddingLeft = 1, 2
 
 	return d
@@ -62,36 +62,50 @@ func updateSongList(e termui.Event) {
 	songs := make([]string, 0, len(lst.Data.Children))
 
 	for i, s := range lst.Data.Children {
-		t := fmt.Sprintf("[%d] %s", i, s.Data.Title)
+		t := fmt.Sprintf("[%d] %s [(%s)](fg-cyan)", i+1, s.Data.Title, s.Data.Genre)
 		songs = songs[0 : i+1]
 		songs[i] = t
 	}
 
 	Songs.Items = songs
-	Songs.Height = len(songs)
+	Songs.Height = len(songs) + 2
 
 	Refresh()
 }
 
 func updateDownloader(e termui.Event) {
 	lst := e.Data.(*geddit.Listing)
-
 	i := make([]string, 2, 2)
-	i[0] = fmt.Sprintf("Downloading now: [%s](fg-green)", lst.Data.Children[0].Data.Title)
-	i[1] = fmt.Sprintf("Next in queue: [%s](fg-blue)", lst.Data.Children[1].Data.Title)
+
+	curr, next := getCurrAndNextSongs(lst)
+
+	i[0] = fmt.Sprintf("Downloading now: [%s](fg-blue)", curr.Data.Title)
+	i[1] = fmt.Sprintf("Next in queue: [%s](fg-magenta)", next.Data.Title)
 
 	Download.Items = i
 	Refresh()
 
-	time.Sleep(5 * time.Second)
-	lst.Data.Children = lst.Data.Children[1:]
-	events.FireStartSongDownload(lst)
+	time.Sleep(1 * time.Second)
+	downloadSong(curr)
+
+	if next.Data.Url != "" {
+		lst.Data.Children = lst.Data.Children[1:]
+		events.FireStartSongDownload(lst)
+	}
+}
+
+func getCurrAndNextSongs(lst *geddit.Listing) (curr, next geddit.Children) {
+	curr = lst.Data.Children[0]
+
+	if len(lst.Data.Children) > 1 {
+		next = lst.Data.Children[1]
+	}
+
+	return
 }
 
 func EventHandler() {
-	termui.Handle("/sys/kbd/q", func(termui.Event) {
-		termui.StopLoop()
-	})
+	termui.Handle("/sys/kbd/q", func(termui.Event) { termui.StopLoop() })
 
 	termui.Handle(events.FinishedGedditDownload, updateSongList)
 	termui.Handle(events.StartSongDownload, updateDownloader)
