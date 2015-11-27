@@ -13,14 +13,14 @@ func main() {
 	drawGrid(lst)
 }
 
-func drawGrid(lst geddit.Listing) {
+func drawGrid() {
 	err := termui.Init()
 	if err != nil {
 		panic(err)
 	}
 	defer termui.Close()
 
-	songs := ui.SongsWidget(lst)
+	songs := ui.SongsWidget()
 	quit := ui.QuitWidget()
 
 	termui.Body.AddRows(
