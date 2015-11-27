@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/avadhutp/lazarus/events"
 	"github.com/avadhutp/lazarus/geddit"
@@ -10,9 +11,10 @@ import (
 )
 
 var (
-	Quit  = quitWidget()
-	Songs = songsWidget()
-	Title = titleWidget()
+	Quit     = quitWidget()
+	Songs    = songsWidget()
+	Title    = titleWidget()
+	Download = downloadWidget()
 )
 
 func Refresh() { termui.Body.Align(); termui.Render(termui.Body) }
@@ -31,9 +33,18 @@ func songsWidget() *termui.List {
 	w.Items = []string{"Downloading..."}
 	w.BorderLabel = "Song list"
 	w.Height = 3
-	w.Y = 0
 
 	return w
+}
+
+func downloadWidget() *termui.List {
+	d := termui.NewList()
+	d.Items = []string{"Waiting to download..."}
+	d.Border = false
+	d.Height = 5
+	d.PaddingTop, d.PaddingLeft = 1, 2
+
+	return d
 }
 
 func quitWidget() *termui.Par {
@@ -62,10 +73,26 @@ func updateSongList(e termui.Event) {
 	Refresh()
 }
 
+func updateDownloader(e termui.Event) {
+	lst := e.Data.(*geddit.Listing)
+
+	i := make([]string, 2, 2)
+	i[0] = fmt.Sprintf("Downloading now: [%s](fg-green)", lst.Data.Children[0].Data.Title)
+	i[1] = fmt.Sprintf("Next in queue: [%s](fg-blue)", lst.Data.Children[1].Data.Title)
+
+	Download.Items = i
+	Refresh()
+
+	time.Sleep(5 * time.Second)
+	lst.Data.Children = lst.Data.Children[1:]
+	events.FireStartSongDownload(lst)
+}
+
 func EventHandler() {
 	termui.Handle("/sys/kbd/q", func(termui.Event) {
 		termui.StopLoop()
 	})
 
 	termui.Handle(events.FinishedGedditDownload, updateSongList)
+	termui.Handle(events.StartSongDownload, updateDownloader)
 }
