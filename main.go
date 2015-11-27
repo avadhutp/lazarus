@@ -1,41 +1,43 @@
 package main
 
 import (
-	"github.com/gizak/termui"
-	// "fmt"
+	"github.com/avadhutp/lazarus/events"
 	"github.com/avadhutp/lazarus/geddit"
 	"github.com/avadhutp/lazarus/ui"
+	"github.com/gizak/termui"
 )
 
 func main() {
-	lst := geddit.Get()
+	ui.EventHandler()
+	go download()
 
-	drawGrid(lst)
+	render()
+
+	defer termui.Close()
+	ui.Refresh()
+	termui.Loop()
 }
 
-func drawGrid() {
+func render() {
 	err := termui.Init()
 	if err != nil {
 		panic(err)
 	}
-	defer termui.Close()
-
-	songs := ui.SongsWidget()
-	quit := ui.QuitWidget()
 
 	termui.Body.AddRows(
 		termui.NewRow(
-			termui.NewCol(6, 0, songs),
+			termui.NewCol(12, 0, ui.Title),
 		),
 		termui.NewRow(
-			termui.NewCol(6, 0, quit),
+			termui.NewCol(6, 0, ui.Songs),
+		),
+		termui.NewRow(
+			termui.NewCol(12, 0, ui.Quit),
 		),
 	)
+}
 
-	termui.Body.Align()
-	termui.Render(termui.Body)
-	termui.Handle("/sys/kbd/q", func(termui.Event) {
-		termui.StopLoop()
-	})
-	termui.Loop()
+func download() {
+	lst := geddit.Get()
+	events.FireFinishedGedditDownload(&lst)
 }
