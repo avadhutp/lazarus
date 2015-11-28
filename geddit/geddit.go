@@ -47,21 +47,11 @@ func cleanList(lst *Listing) {
 		"youtube.com": true,
 	}
 
-	l := len(lst.Data.Children)
-	var tmp = make([]Children, l, l)
+	l := lst.Data.Children[0:]
 
-	for i, el := range lst.Data.Children {
-		tmp[i] = el
-	}
-
-	for i, el := range tmp {
+	for i, el := range l {
 		if !whitelistedDomains[el.Data.Domain] {
-			if i >= l {
-				lst.Data.Children = lst.Data.Children[:i]
-			} else {
-				lst.Data.Children = append(lst.Data.Children[:i], lst.Data.Children[i+1:]...)
-			}
-
+			lst.Data.Children = append(lst.Data.Children[:i], lst.Data.Children[i+1:]...)
 		}
 	}
 }

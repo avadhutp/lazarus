@@ -1,18 +1,20 @@
 package ui
 
 import (
-	"fmt"
 	"github.com/avadhutp/lazarus/geddit"
 	"os/exec"
-	"time"
 )
 
-const (
-	cmd = " youtube-dl --extract-audio -o '/tmp/lazarus/%(title)s.%(ext)s' --audio-format mp3 %s"
-)
+func DownloadSong(el geddit.Children) {
+	args := []string{
+		"--extract-audio",
+		"-o",
+		"/tmp/lazarus/" + el.Data.Id + ".mp3",
+		"--audio-format",
+		"mp3",
+		el.Data.Url,
+	}
+	cmd := exec.Command("youtube-dl", args...)
 
-func downloadSong(el geddit.Children) {
-	dlCmd := fmt.Sprintf(cmd, el.Data.Url)
-	exec.Command(dlCmd)
-	time.Sleep(1 * time.Second)
+	cmd.Run()
 }

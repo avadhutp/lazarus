@@ -21,7 +21,7 @@ func Refresh() { termui.Body.Align(); termui.Render(termui.Body) }
 
 func titleWidget() *termui.Gauge {
 	t := termui.NewGauge()
-	t.Label = "*** Lazarus ***"
+	t.Label = "****** Lazarus ******"
 	t.Height = 1
 	t.Border = false
 
@@ -86,7 +86,7 @@ func updateDownloader(e termui.Event) {
 	Refresh()
 
 	time.Sleep(1 * time.Second)
-	downloadSong(curr)
+	DownloadSong(curr)
 
 	if next.Data.Url != "" {
 		lst.Data.Children = lst.Data.Children[1:]

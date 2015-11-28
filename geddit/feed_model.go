@@ -15,5 +15,6 @@ type Children struct {
 		Url    string `json:"url"`
 		Title  string `json:"title"`
 		Genre  string `json:"link_flair_text"`
+		Id     string `json:"id"`
 	} `json:"data"`
 }
