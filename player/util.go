@@ -1,4 +1,4 @@
-package ui
+package player
 
 import (
 	"github.com/avadhutp/lazarus/geddit"

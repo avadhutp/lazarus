@@ -1,9 +1,8 @@
-package ui
+package player
 
 import (
 	"fmt"
 
-	"github.com/avadhutp/lazarus/events"
 	"github.com/avadhutp/lazarus/geddit"
 
 	"github.com/gizak/termui"

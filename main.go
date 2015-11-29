@@ -1,19 +1,18 @@
 package main
 
 import (
-	"github.com/avadhutp/lazarus/events"
 	"github.com/avadhutp/lazarus/geddit"
-	"github.com/avadhutp/lazarus/ui"
+	"github.com/avadhutp/lazarus/player"
 	"github.com/gizak/termui"
 )
 
 func main() {
-	events.EventHandler()
+	player.EventHandler()
 	go download()
 
 	render()
 	defer termui.Close()
-	ui.Refresh()
+	player.Refresh()
 	termui.Loop()
 }
 
@@ -25,18 +24,18 @@ func render() {
 
 	termui.Body.AddRows(
 		termui.NewRow(
-			termui.NewCol(12, 0, ui.Title),
+			termui.NewCol(12, 0, player.Title),
 		),
 		termui.NewRow(
-			termui.NewCol(6, 0, ui.Songs),
+			termui.NewCol(6, 0, player.Songs),
 		),
 		termui.NewRow(
-			termui.NewCol(6, 0, ui.Quit),
+			termui.NewCol(6, 0, player.Quit),
 		),
 	)
 }
 
 func download() {
 	lst := geddit.Get()
-	events.FireFinishedGedditDownload(lst)
+	player.FireFinishedGedditDownload(lst)
 }

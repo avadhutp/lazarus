@@ -1,4 +1,4 @@
-package events
+package player
 
 import (
 	"github.com/avadhutp/lazarus/geddit"
@@ -16,7 +16,7 @@ func FireFinishedGedditDownload(music map[string]geddit.Children) {
 
 func EventHandler() {
 	termui.Handle("/sys/kbd/q", func(termui.Event) { termui.StopLoop() })
-	termui.Handle(events.FinishedGedditDownload, updateSongList)
+	termui.Handle(FinishedGedditDownload, updateSongList)
 }
 
 type Player struct {
