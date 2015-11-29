@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	ui.EventHandler()
+	events.EventHandler()
 	go download()
 
 	render()

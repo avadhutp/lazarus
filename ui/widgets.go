@@ -59,8 +59,3 @@ func updateSongList(e termui.Event) {
 
 	Refresh()
 }
-
-func EventHandler() {
-	termui.Handle("/sys/kbd/q", func(termui.Event) { termui.StopLoop() })
-	termui.Handle(events.FinishedGedditDownload, updateSongList)
-}
