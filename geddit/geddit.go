@@ -12,7 +12,7 @@ const (
 )
 
 // Get Hit the feed URL and get a struct of items ready for display/download/play in lazarus
-func Get() (music map[string]Children) {
+func Get() (music map[string]*Children) {
 	r, err := http.Get(hots)
 
 	if err != nil {
@@ -27,7 +27,7 @@ func Get() (music map[string]Children) {
 		return
 	}
 
-	var lst *Listing
+	var lst Listing
 	contents, _ := ioutil.ReadAll(r.Body)
 	decodeErr := json.Unmarshal([]byte(string(contents)), &lst)
 
@@ -42,11 +42,11 @@ func Get() (music map[string]Children) {
 	return
 }
 
-func makeMap(lst *Listing) (music map[string]Children) {
-	music = make(map[string]Children)
+func makeMap(lst Listing) (music map[string]*Children) {
+	music = make(map[string]*Children)
 
 	for _, el := range lst.Data.Children {
-		music[el.Data.Id] = el
+		music[el.Data.Id] = &Children{"", el.Data}
 	}
 
 	return

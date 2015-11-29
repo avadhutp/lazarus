@@ -28,6 +28,7 @@ func render() {
 		),
 		termui.NewRow(
 			termui.NewCol(6, 0, player.Songs),
+			termui.NewCol(6, 0, player.Log),
 		),
 		termui.NewRow(
 			termui.NewCol(6, 0, player.Quit),
@@ -37,5 +38,7 @@ func render() {
 
 func download() {
 	lst := geddit.Get()
-	player.FireFinishedGedditDownload(lst)
+	playerObj := player.Player{lst, []string{}}
+
+	player.FireFinishedRedditDownload(playerObj)
 }

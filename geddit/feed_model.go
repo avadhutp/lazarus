@@ -1,5 +1,12 @@
 package geddit
 
+const (
+	IsDownloading = 1
+	Downloaded    = 2
+	Playing       = 3
+	IsPlayed      = 4
+)
+
 type Listing struct {
 	Kind string `json:"kind"`
 	Data struct {
@@ -17,5 +24,14 @@ type Children struct {
 		Genre  string `json:"link_flair_text"`
 		Id     string `json:"id"`
 		Played bool
+		Status int
 	} `json:"data"`
+}
+
+func (c *Children) IsDownloading() {
+	c.Data.Status = IsDownloading
+}
+
+func (c *Children) Downloaded() {
+	c.Data.Status = Downloaded
 }
