@@ -7,13 +7,19 @@ import (
 
 var (
 	FinishedGedditDownload = "/geddit/download/finished"
-	StartSongDownload      = "/lazarus/song/download"
+	DoneSongDownload       = "/lazarus/song/download"
 )
 
-func FireFinishedGedditDownload(lst *geddit.Listing) {
-	termui.SendCustomEvt(FinishedGedditDownload, lst)
+func FireFinishedGedditDownload(music map[string]geddit.Children) {
+	termui.SendCustomEvt(FinishedGedditDownload, music)
 }
 
-func FireStartSongDownload(lst *geddit.Listing) {
-	termui.SendCustomEvt(StartSongDownload, lst)
+type Player struct {
+	lst map[string]*geddit.Children
+}
+
+func (p *Player) Start() {
+	// for _, el := range p.lst {
+
+	// }
 }

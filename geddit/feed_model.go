@@ -16,5 +16,6 @@ type Children struct {
 		Title  string `json:"title"`
 		Genre  string `json:"link_flair_text"`
 		Id     string `json:"id"`
+		Played bool
 	} `json:"data"`
 }

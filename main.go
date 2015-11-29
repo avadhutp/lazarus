@@ -29,16 +29,14 @@ func render() {
 		),
 		termui.NewRow(
 			termui.NewCol(6, 0, ui.Songs),
-			termui.NewCol(6, 0, ui.Download),
 		),
 		termui.NewRow(
-			termui.NewCol(12, 0, ui.Quit),
+			termui.NewCol(6, 0, ui.Quit),
 		),
 	)
 }
 
 func download() {
 	lst := geddit.Get()
-	events.FireFinishedGedditDownload(&lst)
-	events.FireStartSongDownload(&lst)
+	events.FireFinishedGedditDownload(lst)
 }

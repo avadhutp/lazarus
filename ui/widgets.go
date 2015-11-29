@@ -2,7 +2,6 @@ package ui
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/avadhutp/lazarus/events"
 	"github.com/avadhutp/lazarus/geddit"
@@ -11,10 +10,9 @@ import (
 )
 
 var (
-	Quit     = quitWidget()
-	Songs    = songsWidget()
-	Title    = titleWidget()
-	Download = downloadWidget()
+	Quit  = quitWidget()
+	Songs = songsWidget()
+	Title = titleWidget()
 )
 
 func Refresh() { termui.Body.Align(); termui.Render(termui.Body) }
@@ -37,16 +35,6 @@ func songsWidget() *termui.List {
 	return w
 }
 
-func downloadWidget() *termui.List {
-	d := termui.NewList()
-	d.Items = []string{"Waiting to download..."}
-	d.Border = false
-	d.Height = 10
-	d.PaddingTop, d.PaddingLeft = 1, 2
-
-	return d
-}
-
 func quitWidget() *termui.Par {
 	q := termui.NewPar("Press q to quit Lazarus.")
 	q.TextFgColor = termui.ColorRed
@@ -58,13 +46,12 @@ func quitWidget() *termui.Par {
 
 // UpdateSongList Will update the songs in the Songs widget when the corresponding event is fired.
 func updateSongList(e termui.Event) {
-	lst := e.Data.(*geddit.Listing)
-	songs := make([]string, 0, len(lst.Data.Children))
+	music := e.Data.(map[string]geddit.Children)
+	songs := make([]string, 0, len(music))
 
-	for i, s := range lst.Data.Children {
-		t := fmt.Sprintf("[%d] %s [(%s)](fg-cyan)", i+1, s.Data.Title, s.Data.Genre)
-		songs = songs[0 : i+1]
-		songs[i] = t
+	for _, s := range music {
+		t := fmt.Sprintf("[ ] %s [(%s)](fg-cyan)", s.Data.Title, s.Data.Genre)
+		songs = append(songs, t)
 	}
 
 	Songs.Items = songs
@@ -73,40 +60,7 @@ func updateSongList(e termui.Event) {
 	Refresh()
 }
 
-func updateDownloader(e termui.Event) {
-	lst := e.Data.(*geddit.Listing)
-	i := make([]string, 2, 2)
-
-	curr, next := getCurrAndNextSongs(lst)
-
-	i[0] = fmt.Sprintf("Downloading now: [%s](fg-blue)", curr.Data.Title)
-	i[1] = fmt.Sprintf("Next in queue: [%s](fg-magenta)", next.Data.Title)
-
-	Download.Items = i
-	Refresh()
-
-	time.Sleep(1 * time.Second)
-	DownloadSong(curr)
-
-	if next.Data.Url != "" {
-		lst.Data.Children = lst.Data.Children[1:]
-		events.FireStartSongDownload(lst)
-	}
-}
-
-func getCurrAndNextSongs(lst *geddit.Listing) (curr, next geddit.Children) {
-	curr = lst.Data.Children[0]
-
-	if len(lst.Data.Children) > 1 {
-		next = lst.Data.Children[1]
-	}
-
-	return
-}
-
 func EventHandler() {
 	termui.Handle("/sys/kbd/q", func(termui.Event) { termui.StopLoop() })
-
 	termui.Handle(events.FinishedGedditDownload, updateSongList)
-	termui.Handle(events.StartSongDownload, updateDownloader)
 }
