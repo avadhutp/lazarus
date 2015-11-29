@@ -2,6 +2,7 @@ package player
 
 import (
 	"fmt"
+	"github.com/avadhutp/lazarus/geddit"
 	"time"
 
 	"github.com/gizak/termui"
@@ -57,6 +58,23 @@ func updateLog(msg string) {
 	time.Sleep(5 * time.Second)
 }
 
+func formatSong(el *geddit.Children) (t string) {
+	s := el.Data
+	status, statusFg, titleFg := " ", "fg-white", "fg-white"
+
+	switch s.Status {
+	case geddit.IsDownloading:
+		status = "»"
+	case geddit.Downloaded:
+		status = "✔"
+		statusFg, titleFg = "fg-green", "fg-green"
+	}
+
+	t = fmt.Sprintf("|[%s](%s)| [%s](%s)", status, statusFg, s.Title, titleFg)
+
+	return t
+}
+
 // UpdateSongList Will update the songs in the Songs widget when the corresponding event is fired.
 func paintSongList(e termui.Event) {
 	obj := e.Data.(Player)
@@ -65,7 +83,7 @@ func paintSongList(e termui.Event) {
 	for _, key := range obj.GetKeys() {
 		s := obj.Music[key]
 
-		t := fmt.Sprintf("[%d] %s [(%s)](fg-cyan)", s.Data.Status, s.Data.Title, s.Data.Genre)
+		t := formatSong(s)
 		songs = append(songs, t)
 	}
 

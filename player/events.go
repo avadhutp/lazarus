@@ -45,8 +45,8 @@ func (p *Player) GetKeys() []string {
 }
 
 func (p *Player) Start() {
-	for _, el := range p.Music {
-		p.download(el)
+	for _, k := range p.GetKeys() {
+		p.download(p.Music[k])
 	}
 }
 
