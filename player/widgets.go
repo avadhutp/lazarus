@@ -19,7 +19,7 @@ func Refresh() { termui.Body.Align(); termui.Render(termui.Body) }
 
 func titleWidget() *termui.Gauge {
 	t := termui.NewGauge()
-	t.Label = "****** Lazarus ******"
+	t.Label = "****** Lazarus ☢ ******"
 	t.Height = 1
 	t.Border = false
 
@@ -70,7 +70,7 @@ func formatSong(el *geddit.Children) (t string) {
 		statusFg, titleFg = "fg-green", "fg-green"
 	}
 
-	t = fmt.Sprintf("|[%s](%s)| [%s](%s)", status, statusFg, s.Title, titleFg)
+	t = fmt.Sprintf("|[%s](%s)|[%s](%s)", status, statusFg, s.Title, titleFg)
 
 	return t
 }
