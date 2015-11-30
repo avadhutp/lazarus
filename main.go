@@ -1,12 +1,31 @@
 package main
 
 import (
+	"os"
+
 	"github.com/avadhutp/lazarus/geddit"
 	"github.com/avadhutp/lazarus/player"
+	"github.com/codegangsta/cli"
 	"github.com/gizak/termui"
 )
 
+const (
+	name    = "lazarus"
+	version = "0.0.1"
+	desc    = "Lazarus: The resurrection of the revolution."
+)
+
 func main() {
+	app := cli.NewApp()
+	app.Name = name
+	app.Version = version
+	app.Usage = desc
+
+	app.Action = start
+	app.Run(os.Args)
+}
+
+func start(ctx *cli.Context) {
 	player.EventHandler()
 	go download()
 
