@@ -3,8 +3,9 @@ package main
 import (
 	"os"
 
+	"github.com/avadhutp/lazarus/ui"
+
 	"github.com/avadhutp/lazarus/geddit"
-	"github.com/avadhutp/lazarus/player"
 	"github.com/codegangsta/cli"
 	"github.com/gizak/termui"
 )
@@ -26,12 +27,12 @@ func main() {
 }
 
 func start(ctx *cli.Context) {
-	player.EventHandler()
+	ui.EventHandler()
 	go download()
 
 	render()
 	defer termui.Close()
-	player.Refresh()
+	ui.Refresh()
 	termui.Loop()
 }
 
@@ -43,21 +44,21 @@ func render() {
 
 	termui.Body.AddRows(
 		termui.NewRow(
-			termui.NewCol(12, 0, player.Title),
+			termui.NewCol(12, 0, ui.Title),
 		),
 		termui.NewRow(
-			termui.NewCol(6, 0, player.Songs),
-			termui.NewCol(6, 0, player.Log),
+			termui.NewCol(6, 0, ui.Songs),
+			termui.NewCol(6, 0, ui.Log),
 		),
 		termui.NewRow(
-			termui.NewCol(6, 0, player.Quit),
+			termui.NewCol(6, 0, ui.Quit),
 		),
 	)
 }
 
 func download() {
 	lst := geddit.Get()
-	playerObj := player.Player{lst, []string{}}
+	player := ui.Player{lst, []string{}}
 
-	player.FireFinishedRedditDownload(playerObj)
+	ui.FireFinishedRedditDownload(player)
 }

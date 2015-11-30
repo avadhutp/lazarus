@@ -1,10 +1,10 @@
-package player
+package ui
 
 import (
 	"fmt"
-	"github.com/avadhutp/lazarus/geddit"
 	"time"
 
+	"github.com/avadhutp/lazarus/geddit"
 	"github.com/gizak/termui"
 )
 
