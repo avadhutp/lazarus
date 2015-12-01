@@ -2,7 +2,6 @@ package ui
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/avadhutp/lazarus/geddit"
 	"github.com/gizak/termui"
@@ -12,11 +11,12 @@ var (
 	Quit  = quitWidget()
 	Songs = songsWidget()
 	Title = titleWidget()
-	Log   = logWidget()
 )
 
+// Refresh Re-draws the widgets after something in them changes
 func Refresh() { termui.Body.Align(); termui.Render(termui.Body) }
 
+// titleWidget Provides the title bar
 func titleWidget() *termui.Gauge {
 	t := termui.NewGauge()
 	t.Height = 1
@@ -25,13 +25,7 @@ func titleWidget() *termui.Gauge {
 	return t
 }
 
-func logWidget() *termui.Par {
-	l := termui.NewPar("")
-	l.Height = 10
-
-	return l
-}
-
+// songsWidget Provides the song list widget
 func songsWidget() *termui.List {
 	w := termui.NewList()
 	w.Items = []string{"Downloading..."}
@@ -41,6 +35,7 @@ func songsWidget() *termui.List {
 	return w
 }
 
+// quitWidget Displays the key required to quit
 func quitWidget() *termui.Par {
 	q := termui.NewPar("Press q to quit Lazarus.")
 	q.TextFgColor = termui.ColorRed
@@ -50,13 +45,7 @@ func quitWidget() *termui.Par {
 	return q
 }
 
-func updateLog(msg string) {
-	Log.Text = msg
-	Refresh()
-
-	time.Sleep(5 * time.Second)
-}
-
+// formatSong Formats the song displayed in Song widget according to its current status
 func formatSong(el *geddit.Children) (t string) {
 	s := el.Data
 	status, statusFg, titleFg := " ", "fg-white", "fg-white"

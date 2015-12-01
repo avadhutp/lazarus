@@ -17,6 +17,7 @@ const (
 	desc    = "Lazarus: The resurrection of the revolution."
 )
 
+// main Entry point for the application
 func main() {
 	app := cli.NewApp()
 	app.Name = name
@@ -34,6 +35,7 @@ func main() {
 	app.Run(os.Args)
 }
 
+// start Starts all the necessary processes/go co-routines for the app to initialize
 func start(ctx *cli.Context) {
 	cfg := checkAndReadConfig(ctx)
 	ui.EventHandler()
@@ -45,6 +47,7 @@ func start(ctx *cli.Context) {
 	termui.Loop()
 }
 
+// checkAndReadConfig Loads config and makes sure it is ok
 func checkAndReadConfig(ctx *cli.Context) *ui.Cfg {
 	var cfg ui.Cfg
 	if err := ini.MapTo(&cfg, ctx.String("config")); err != nil {
@@ -58,6 +61,7 @@ func checkAndReadConfig(ctx *cli.Context) *ui.Cfg {
 	return &cfg
 }
 
+// render Paints the different widgest that compose Lazarus
 func render(ctx *cli.Context) {
 	err := termui.Init()
 	if err != nil {
@@ -72,7 +76,6 @@ func render(ctx *cli.Context) {
 		),
 		termui.NewRow(
 			termui.NewCol(6, 0, ui.Songs),
-			termui.NewCol(6, 0, ui.Log),
 		),
 		termui.NewRow(
 			termui.NewCol(6, 0, ui.Quit),
@@ -80,6 +83,7 @@ func render(ctx *cli.Context) {
 	)
 }
 
+// downloadPlaylist Downloads the playlist from reddit and initiates the player
 func downloadPlaylist(cfg *ui.Cfg) {
 	lst := geddit.Get()
 	player := ui.Player{lst, []string{}, cfg}
