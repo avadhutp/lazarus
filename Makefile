@@ -8,4 +8,5 @@ SOURCES := $(foreach pkg, $(PKGS), $(wildcard $(pkg)/*.go))
 lint: $(SOURCES)
 	@echo Linting lazarus sources...
 	@go get -u github.com/golang/lint/golint
-	@$(foreach src, $(SOURCES), golint $(src);)
+	@go get -u github.com/GeertJohan/fgt
+	@$(foreach src, $(SOURCES), fgt golint ./... || exit;)
