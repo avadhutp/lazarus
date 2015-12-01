@@ -11,6 +11,7 @@ import (
 type Player struct {
 	Music map[string]*geddit.Children
 	Keys  []string
+	Cfg   *Cfg
 }
 
 func (p *Player) GetKeys() []string {

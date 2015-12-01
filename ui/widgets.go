@@ -19,7 +19,6 @@ func Refresh() { termui.Body.Align(); termui.Render(termui.Body) }
 
 func titleWidget() *termui.Gauge {
 	t := termui.NewGauge()
-	t.Label = "****** Lazarus ☢ ******"
 	t.Height = 1
 	t.Border = false
 
