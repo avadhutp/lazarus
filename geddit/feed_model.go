@@ -5,10 +5,12 @@ const (
 	IsDownloading = 1
 	// Downloaded The song has been downloaded
 	Downloaded = 2
+	// NotDownloaded Cannot download the song due to some errors
+	NotDownloaded = 3
 	// Playing The song is being played currently
-	Playing = 3
+	Playing = 4
 	// IsPlayed The song has finished playing
-	IsPlayed = 4
+	IsPlayed = 5
 )
 
 // Listing structure mapping the json returned by reddit's API
@@ -34,12 +36,17 @@ type Children struct {
 	} `json:"data"`
 }
 
-// IsDownloading Set the status of the song (Children) to being downloaded
+// IsDownloading Set the status of the song to being downloaded
 func (c *Children) IsDownloading() {
 	c.Data.Status = IsDownloading
 }
 
-// Downloaded Set the status of the song (Children) as being downloaded
+// Downloaded Set the status of the song as being downloaded
 func (c *Children) Downloaded() {
 	c.Data.Status = Downloaded
+}
+
+// CannotDownload Set the sthe status of the song as count not download, used when there's some error with youtube-dl
+func (c *Children) CannotDownload() {
+	c.Data.Status = NotDownloaded
 }

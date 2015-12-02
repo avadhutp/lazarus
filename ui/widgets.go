@@ -59,6 +59,9 @@ func formatSong(el *geddit.Children) (t string) {
 	case geddit.Downloaded:
 		status = "✔"
 		statusFg, titleFg = "fg-green", "fg-green"
+	case geddit.NotDownloaded:
+		status = "✖"
+		statusFg, titleFg = "fg-red", "fg-red"
 	}
 
 	t = fmt.Sprintf("|[%s](%s)|[%s](%s)", status, statusFg, s.Title, titleFg)

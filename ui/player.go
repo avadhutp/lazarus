@@ -3,7 +3,6 @@ package ui
 import (
 	"os/exec"
 	"sort"
-	"time"
 
 	"github.com/avadhutp/lazarus/geddit"
 )
@@ -39,13 +38,17 @@ func (p *Player) download(el *geddit.Children) {
 	el.IsDownloading()
 	UpdatePlayer(*p)
 
-	time.Sleep(1 * time.Second)
+	switch p.runCmd(el) {
+	case nil:
+		el.Downloaded()
+	default:
+		el.CannotDownload()
+	}
 
-	el.Downloaded()
 	UpdatePlayer(*p)
 }
 
-func downloadSong(el geddit.Children) {
+func (p *Player) runCmd(el *geddit.Children) error {
 	args := []string{
 		"--extract-audio",
 		"-o",
@@ -55,6 +58,7 @@ func downloadSong(el geddit.Children) {
 		el.Data.URL,
 	}
 	cmd := exec.Command("youtube-dl", args...)
+	err := cmd.Run()
 
-	cmd.Run()
+	return err
 }
