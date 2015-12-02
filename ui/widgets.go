@@ -8,8 +8,11 @@ import (
 )
 
 var (
-	Quit  = quitWidget()
+	// Quit Is a widget to display the keystroke to quit lazarus
+	Quit = quitWidget()
+	// Songs Is a widget to display the songlist
 	Songs = songsWidget()
+	// Title Is a widget to display the title of the prog
 	Title = titleWidget()
 )
 
@@ -80,7 +83,7 @@ func paintSongList(e termui.Event) {
 
 	Refresh()
 
-	if e.Path == FinishedRedditDownload {
+	if e.Path == finishedRedditDownload {
 		go obj.Start()
 	}
 }

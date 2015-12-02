@@ -8,15 +8,17 @@ import (
 	"github.com/avadhutp/lazarus/geddit"
 )
 
+// Player Datastructure to hold songs and download/play them
 type Player struct {
-	Music    map[string]*geddit.Children
-	Keys     []string
-	Cfg_main *Cfg
+	Music map[string]*geddit.Children
+	Keys  []string
+	Cfg   *Cfg
 }
 
+// GetKeys Since all the songs are held in a map, to make the order of retrieval deterministic, we set the order ourselves using this func
 func (p *Player) GetKeys() []string {
 	if len(p.Keys) == 0 {
-		for k, _ := range p.Music {
+		for k := range p.Music {
 			p.Keys = append(p.Keys, k)
 		}
 
@@ -26,6 +28,7 @@ func (p *Player) GetKeys() []string {
 	return p.Keys
 }
 
+// Start Initiates the song download process
 func (p *Player) Start() {
 	for _, k := range p.GetKeys() {
 		p.download(p.Music[k])
@@ -46,10 +49,10 @@ func downloadSong(el geddit.Children) {
 	args := []string{
 		"--extract-audio",
 		"-o",
-		"/tmp/lazarus/" + el.Data.Id + ".mp3",
+		"/tmp/lazarus/" + el.Data.ID + ".mp3",
 		"--audio-format",
 		"mp3",
-		el.Data.Url,
+		el.Data.URL,
 	}
 	cmd := exec.Command("youtube-dl", args...)
 

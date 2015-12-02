@@ -46,7 +46,7 @@ func makeMap(lst Listing) (music map[string]*Children) {
 	music = make(map[string]*Children)
 
 	for _, el := range lst.Data.Children {
-		music[el.Data.Id] = &Children{"", el.Data}
+		music[el.Data.ID] = &Children{"", el.Data}
 	}
 
 	return

@@ -6,7 +6,7 @@ import (
 	"errors"
 )
 
-// Config Maps to the lazarus config ini file.
+// Cfg Maps to the lazarus config ini file.
 type Cfg struct {
 	TmpLocation string `ini:"tmp_location"`
 	MazSize     string `ini:"max_size"`
