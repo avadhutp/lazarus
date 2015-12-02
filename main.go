@@ -38,6 +38,7 @@ func main() {
 // start Starts all the necessary processes/go co-routines for the app to initialize
 func start(ctx *cli.Context) {
 	cfg := checkAndReadConfig(ctx)
+
 	ui.EventHandler()
 	render(ctx)
 	go downloadPlaylist(cfg)

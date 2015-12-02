@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"os"
 
 	"errors"
@@ -9,6 +10,7 @@ import (
 // Cfg Maps to the lazarus config ini file.
 type Cfg struct {
 	TmpLocation string `ini:"tmp_location"`
+	LogLocation string `ini:"log_location"`
 	MazSize     string `ini:"max_size"`
 	LogFile     string `ini:"log_file"`
 }
@@ -19,16 +21,27 @@ func (c *Cfg) AllOk() error {
 		return err
 	}
 
+	if err := c.isLogLocationOk(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// isTmpLocationOk Ensures that the tmp_location from the ini file exists.
+func (c *Cfg) isLogLocationOk() error {
+	return isLocationOk(c.LogLocation, "log_location")
+}
+
 func (c *Cfg) isTmpLocationOk() error {
-	if c.TmpLocation == "" {
-		return errors.New("Missing directive in ini file: tmp_location")
+	return isLocationOk(c.TmpLocation, "tmp_location")
+}
+
+func isLocationOk(loc string, name string) error {
+	if loc == "" {
+		return errors.New(fmt.Sprintf("Missing directive in the ini file: %s", name))
 	}
 
-	if _, err := os.Stat(c.TmpLocation); os.IsNotExist(err) {
+	if _, err := os.Stat(loc); os.IsNotExist(err) {
 		return err
 	}
 
