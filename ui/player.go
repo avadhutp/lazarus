@@ -40,7 +40,6 @@ func (p *Player) GetKeys() []string {
 	return p.Keys
 }
 
-// Start Initiates the song download process
 func (p *Player) startDownloads() {
 	for _, k := range p.GetKeys() {
 		p.download(p.Music[k])
@@ -74,7 +73,7 @@ func (p *Player) runCmd(el *geddit.Children) error {
 	err := cmd.Run()
 
 	if err != nil {
-		log.Error(fmt.Sprintf("Cannot download %s; Error encountered: %s", el.Data.URL, err.Error()))
+		fmt.Errorf("Cannot download %s; Error encountered: %s", el.Data.URL, err.Error())
 	}
 
 	return err

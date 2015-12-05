@@ -28,7 +28,7 @@ func (c *Cfg) isTmpLocationOk() error {
 
 func isLocationOk(loc string, name string) error {
 	if loc == "" {
-		return errors.New(fmt.Sprintf("Missing directive in the ini file: %s", name))
+		return fmt.Errorf("Missing directive in the ini file: %s", name)
 	}
 
 	if _, err := os.Stat(loc); os.IsNotExist(err) {
