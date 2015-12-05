@@ -13,7 +13,11 @@ import (
 
 // NewPlayer Constructs a new player object with the pre-requisites
 func NewPlayer(m map[string]*geddit.Children, cfg *Cfg) Player {
-	return Player{m, []string{}, cfg}
+	p := Player{m, []string{}, cfg}
+
+	p.startDownloads()
+
+	return p
 }
 
 // Player Datastructure to hold songs and download/play them
@@ -37,7 +41,7 @@ func (p *Player) GetKeys() []string {
 }
 
 // Start Initiates the song download process
-func (p *Player) Start() {
+func (p *Player) startDownloads() {
 	for _, k := range p.GetKeys() {
 		p.download(p.Music[k])
 	}

@@ -85,8 +85,4 @@ func paintSongList(e termui.Event) {
 	Songs.Height = len(songs) + 2
 
 	Refresh()
-
-	if e.Path == finishedRedditDownload {
-		go obj.Start()
-	}
 }
