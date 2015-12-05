@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/avadhutp/lazarus/geddit"
 	"github.com/avadhutp/lazarus/ui"
 	"github.com/codegangsta/cli"
@@ -37,6 +38,7 @@ func main() {
 
 // start Starts all the necessary processes/go co-routines for the app to initialize
 func start(ctx *cli.Context) {
+	log.Info("Starting Lazarus...")
 	cfg := checkAndReadConfig(ctx)
 
 	ui.EventHandler()
@@ -87,7 +89,7 @@ func render(ctx *cli.Context) {
 // downloadPlaylist Downloads the playlist from reddit and initiates the player
 func downloadPlaylist(cfg *ui.Cfg) {
 	lst := geddit.Get()
-	player := ui.Player{lst, []string{}, cfg}
+	player := ui.NewPlayer(lst, cfg)
 
 	ui.FireFinishedRedditDownload(player)
 }

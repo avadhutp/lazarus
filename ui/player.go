@@ -1,11 +1,17 @@
 package ui
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"os/exec"
 	"sort"
 
 	"github.com/avadhutp/lazarus/geddit"
 )
+
+// NewPlayer Constructs a new player object with the pre-requisites
+func NewPlayer(m map[string]*geddit.Children, cfg *Cfg) Player {
+	return Player{m, []string{}, cfg}
+}
 
 // Player Datastructure to hold songs and download/play them
 type Player struct {
@@ -38,10 +44,11 @@ func (p *Player) download(el *geddit.Children) {
 	el.IsDownloading()
 	UpdatePlayer(*p)
 
-	switch p.runCmd(el) {
+	switch err := p.runCmd(el); err {
 	case nil:
 		el.Downloaded()
 	default:
+		log.Error("Problems Padron: %s", err.Error())
 		el.CannotDownload()
 	}
 
