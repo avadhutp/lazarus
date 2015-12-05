@@ -3,8 +3,6 @@ package ui
 import (
 	"fmt"
 	"os"
-
-	"errors"
 )
 
 // Cfg Maps to the lazarus config ini file.

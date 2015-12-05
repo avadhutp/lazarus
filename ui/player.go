@@ -73,7 +73,7 @@ func (p *Player) runCmd(el *geddit.Children) error {
 	err := cmd.Run()
 
 	if err != nil {
-		fmt.Errorf("Cannot download %s; Error encountered: %s", el.Data.URL, err.Error())
+		log.Error(fmt.Sprintf("Cannot download %s; Error encountered: %s", el.Data.URL, err.Error()))
 	}
 
 	return err
