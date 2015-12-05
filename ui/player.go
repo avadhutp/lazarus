@@ -1,9 +1,12 @@
 package ui
 
 import (
+	"fmt"
 	log "github.com/Sirupsen/logrus"
+	"net/url"
 	"os/exec"
 	"sort"
+	"strings"
 
 	"github.com/avadhutp/lazarus/geddit"
 )
@@ -44,11 +47,10 @@ func (p *Player) download(el *geddit.Children) {
 	el.IsDownloading()
 	UpdatePlayer(*p)
 
-	switch err := p.runCmd(el); err {
+	switch p.runCmd(el) {
 	case nil:
 		el.Downloaded()
 	default:
-		log.Error("Problems Padron: %s", err.Error())
 		el.CannotDownload()
 	}
 
@@ -62,10 +64,28 @@ func (p *Player) runCmd(el *geddit.Children) error {
 		"/tmp/lazarus/" + el.Data.ID + ".mp3",
 		"--audio-format",
 		"mp3",
-		el.Data.URL,
+		expandYoutubeURL(el.Data.URL),
 	}
 	cmd := exec.Command("youtube-dl", args...)
 	err := cmd.Run()
 
+	if err != nil {
+		log.Error(fmt.Sprintf("Cannot download %s; Error encountered: %s", el.Data.URL, err.Error()))
+	}
+
 	return err
+}
+
+func expandYoutubeURL(URL string) string {
+	u, err := url.Parse(URL)
+
+	if err != nil {
+		return URL
+	}
+
+	if u.Host == "youtu.be" {
+		return fmt.Sprintf("http://www.youtube.com/watch?v=%s", strings.TrimPrefix(u.Path, "/"))
+	}
+
+	return URL
 }

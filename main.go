@@ -20,6 +20,8 @@ const (
 
 // main Entry point for the application
 func main() {
+	log.SetOutput(os.Stdout)
+
 	app := cli.NewApp()
 	app.Name = name
 	app.Version = version
