@@ -80,7 +80,7 @@ func render(ctx *cli.Context) {
 			termui.NewCol(12, 0, ui.Title),
 		),
 		termui.NewRow(
-			termui.NewCol(6, 0, ui.Songs),
+			termui.NewCol(12, 0, ui.Songs),
 		),
 		termui.NewRow(
 			termui.NewCol(6, 0, ui.Quit),

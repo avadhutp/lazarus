@@ -12,12 +12,17 @@ import (
 	"github.com/avadhutp/lazarus/geddit"
 )
 
+const (
+	waitBeforeStartingPlayback = 5 * time.Second
+	waitOnDownloadingSong      = 5 * time.Second
+)
+
 // NewPlayer Constructs a new player object with the pre-requisites
 func NewPlayer(m map[string]*geddit.Children, cfg *Cfg) Player {
 	p := Player{m, []string{}, cfg}
 
 	go p.startDownloads()
-	time.Sleep(5 * time.Second)
+	time.Sleep(waitBeforeStartingPlayback)
 	go p.startPlayback()
 
 	return p
@@ -55,7 +60,7 @@ func (p *Player) play(el *geddit.Children) {
 	case geddit.NotDownloaded:
 		return
 	case geddit.IsDownloading:
-		time.Sleep(5 * time.Second)
+		time.Sleep(waitOnDownloadingSong)
 		p.play(el)
 	case geddit.Downloaded:
 		p.runPlayCmd(el)
@@ -66,7 +71,13 @@ func (p *Player) runPlayCmd(el *geddit.Children) {
 	el.IsPlaying()
 	UpdatePlayer(*p)
 
-	time.Sleep(10 * time.Second)
+	args := []string{
+		"--play-and-exit",
+		p.getFileLocation(el),
+	}
+
+	cmd := exec.Command("cvlc", args...)
+	cmd.Run()
 
 	el.FinishedPlaying()
 	UpdatePlayer(*p)
