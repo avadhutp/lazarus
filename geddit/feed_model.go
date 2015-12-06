@@ -50,3 +50,13 @@ func (c *Children) Downloaded() {
 func (c *Children) CannotDownload() {
 	c.Data.Status = NotDownloaded
 }
+
+// IsPlaying Set the status of the song as being currently played
+func (c *Children) IsPlaying() {
+	c.Data.Status = Playing
+}
+
+// FinishedPlaying Set the status of the song as finished playing
+func (c *Children) FinishedPlaying() {
+	c.Data.Status = IsPlayed
+}

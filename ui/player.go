@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/avadhutp/lazarus/geddit"
 )
@@ -16,6 +17,8 @@ func NewPlayer(m map[string]*geddit.Children, cfg *Cfg) Player {
 	p := Player{m, []string{}, cfg}
 
 	p.startDownloads()
+	time.Sleep(5 * time.Second)
+	p.startPlayback()
 
 	return p
 }
@@ -40,6 +43,35 @@ func (p *Player) GetKeys() []string {
 	return p.Keys
 }
 
+func (p *Player) startPlayback() {
+	for _, k := range p.GetKeys() {
+		p.play(p.Music[k])
+	}
+}
+
+func (p *Player) play(el *geddit.Children) {
+	switch el.Data.Status {
+	case geddit.IsPlayed:
+	case geddit.NotDownloaded:
+		return
+	case geddit.IsDownloading:
+		time.Sleep(5 * time.Second)
+		p.play(el)
+	case geddit.Downloaded:
+		p.runPlayCmd(el)
+	}
+}
+
+func (p *Player) runPlayCmd(el *geddit.Children) {
+	el.IsPlaying()
+	UpdatePlayer(*p)
+
+	time.Sleep(10 * time.Second)
+
+	el.FinishedPlaying()
+	UpdatePlayer(*p)
+}
+
 func (p *Player) startDownloads() {
 	for _, k := range p.GetKeys() {
 		p.download(p.Music[k])
@@ -50,7 +82,7 @@ func (p *Player) download(el *geddit.Children) {
 	el.IsDownloading()
 	UpdatePlayer(*p)
 
-	switch p.runCmd(el) {
+	switch p.runDownloadCmd(el) {
 	case nil:
 		el.Downloaded()
 	default:
@@ -60,11 +92,11 @@ func (p *Player) download(el *geddit.Children) {
 	UpdatePlayer(*p)
 }
 
-func (p *Player) runCmd(el *geddit.Children) error {
+func (p *Player) runDownloadCmd(el *geddit.Children) error {
 	args := []string{
 		"--extract-audio",
 		"-o",
-		"/tmp/lazarus/" + el.Data.ID + ".mp3",
+		p.getFileLocation(el),
 		"--audio-format",
 		"mp3",
 		expandYoutubeURL(el.Data.URL),
@@ -77,6 +109,10 @@ func (p *Player) runCmd(el *geddit.Children) error {
 	}
 
 	return err
+}
+
+func (p *Player) getFileLocation(el *geddit.Children) string {
+	return p.Cfg.TmpLocation + el.Data.ID + ".mp3"
 }
 
 func expandYoutubeURL(URL string) string {
