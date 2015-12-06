@@ -52,22 +52,26 @@ func quitWidget() *termui.Par {
 func formatSong(el *geddit.Children) (t string) {
 	s := el.Data
 	status, statusFg, titleFg := " ", "fg-white", "fg-white"
+	statusBg, titleBg := "", ""
 
 	switch s.Status {
 	case geddit.IsDownloading:
 		status = "»"
 	case geddit.Downloaded:
-		status = "✔"
+		status = "■"
 		statusFg, titleFg = "fg-green", "fg-green"
 	case geddit.NotDownloaded:
 		status = "✖"
 		statusFg, titleFg = "fg-red", "fg-red"
 	case geddit.Playing:
 		status = "►"
-		statusFg, titleFg = "fg-yellow", "fg-yellow"
+		statusBg, titleBg = "bg-green", "bg-green"
+	case geddit.IsPlayed:
+		status = "✔"
+		statusFg, titleFg = "fg-blue", "fg-blue"
 	}
 
-	t = fmt.Sprintf("|[%s](%s)|[%s](%s)", status, statusFg, s.Title, titleFg)
+	t = fmt.Sprintf("|[%s](%s,%s)|[%s](%s,%s)", status, statusFg, statusBg, s.Title, titleFg, titleBg)
 
 	return t
 }
