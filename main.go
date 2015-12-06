@@ -5,7 +5,6 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/avadhutp/lazarus/geddit"
 	"github.com/avadhutp/lazarus/ui"
 	"github.com/codegangsta/cli"
 	"github.com/gizak/termui"
@@ -16,6 +15,7 @@ const (
 	name    = "Lazarus"
 	version = "0.0.1"
 	desc    = "Lazarus: The resurrection of the revolution."
+	hots    = "https://www.reddit.com/r/listentothis/hot.json?sort=hot"
 )
 
 // main Entry point for the application
@@ -90,8 +90,7 @@ func render(ctx *cli.Context) {
 
 // downloadPlaylist Downloads the playlist from reddit and initiates the player
 func downloadPlaylist(cfg *ui.Cfg) {
-	lst := geddit.Get()
-	player := ui.NewPlayer(lst, cfg)
+	player := ui.NewPlayer(cfg)
 
-	ui.FireFinishedRedditDownload(player)
+	player.Start(hots)
 }

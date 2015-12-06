@@ -7,16 +7,12 @@ import (
 	"net/http"
 )
 
-const (
-	hots = "https://www.reddit.com/r/listentothis/hot.json?sort=hot"
-)
-
 // Get Hit the feed URL and get a struct of items ready for display/download/play in lazarus
-func Get() (music map[string]*Children) {
-	r, err := http.Get(hots)
+func Get(rURL string) (music map[string]*Children) {
+	r, err := http.Get(rURL)
 
 	if err != nil {
-		fmt.Errorf("Unable to get the subreddit %s; error faced: %s", hots, err.Error())
+		fmt.Errorf("Unable to get the subreddit %s; error faced: %s", rURL, err.Error())
 		return
 	}
 

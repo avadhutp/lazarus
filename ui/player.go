@@ -18,12 +18,8 @@ const (
 )
 
 // NewPlayer Constructs a new player object with the pre-requisites
-func NewPlayer(m map[string]*geddit.Children, cfg *Cfg) Player {
-	p := Player{m, []string{}, cfg}
-
-	go p.startDownloads()
-	time.Sleep(waitBeforeStartingPlayback)
-	go p.startPlayback()
+func NewPlayer(cfg *Cfg) Player {
+	p := Player{map[string]*geddit.Children{}, []string{}, cfg}
 
 	return p
 }
@@ -33,6 +29,16 @@ type Player struct {
 	Music map[string]*geddit.Children
 	Keys  []string
 	Cfg   *Cfg
+}
+
+func (p *Player) Start(rURL string) {
+	lst := geddit.Get(rURL)
+	p.Music = lst
+	FireFinishedRedditDownload(*p)
+
+	go p.startDownloads()
+	time.Sleep(waitBeforeStartingPlayback)
+	go p.startPlayback()
 }
 
 // GetKeys Since all the songs are held in a map, to make the order of retrieval deterministic, we set the order ourselves using this func
