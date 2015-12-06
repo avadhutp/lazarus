@@ -16,9 +16,9 @@ import (
 func NewPlayer(m map[string]*geddit.Children, cfg *Cfg) Player {
 	p := Player{m, []string{}, cfg}
 
-	p.startDownloads()
+	go p.startDownloads()
 	time.Sleep(5 * time.Second)
-	p.startPlayback()
+	go p.startPlayback()
 
 	return p
 }

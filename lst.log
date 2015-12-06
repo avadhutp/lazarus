@@ -1,0 +1,2 @@
+time="2015-12-06T06:04:04Z" level=info msg="Starting Lazarus..." 
+time="2015-12-06T06:04:06Z" level=error msg="Cannot download https://www.reddit.com/r/listentothis/comments/3usbko/music_melting_pot_week_of_november_30_2015/; Error encountered: exit status 1" 

@@ -14,8 +14,6 @@ var (
 	Songs = songsWidget()
 	// Title Is a widget to display the title of the prog
 	Title = titleWidget()
-	// Debug Is a widget to display a few log messages
-	Debug = debugWidget()
 )
 
 // Refresh Re-draws the widgets after something in them changes
@@ -28,15 +26,6 @@ func titleWidget() *termui.Gauge {
 	t.Border = false
 
 	return t
-}
-
-func debugWidget() *termui.List {
-	d := termui.NewList()
-	d.BorderLabel = "Debug"
-	d.Items = []string{"waiting", "for logs"}
-	d.Height = 30
-
-	return d
 }
 
 // songsWidget Provides the song list widget
@@ -98,15 +87,5 @@ func paintSongList(e termui.Event) {
 	Songs.Items = songs
 	Songs.Height = len(songs) + 2
 
-	Refresh()
-}
-
-// Add a log message to the window
-func painLog(e termui.Event) {
-	str := e.Data.(string)
-	lst := Debug.Items
-	lst = append(lst, str)
-
-	Debug.Items = lst
 	Refresh()
 }
