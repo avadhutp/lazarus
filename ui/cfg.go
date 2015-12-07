@@ -5,6 +5,11 @@ import (
 	"os"
 )
 
+var (
+	osStat       = os.Stat
+	osIsNotExist = os.IsNotExist
+)
+
 // Cfg Maps to the lazarus config ini file.
 type Cfg struct {
 	TmpLocation string `ini:"tmp_location"`
@@ -29,7 +34,7 @@ func isLocationOk(loc string, name string) error {
 		return fmt.Errorf("Missing directive in the ini file: %s", name)
 	}
 
-	if _, err := os.Stat(loc); os.IsNotExist(err) {
+	if _, err := osStat(loc); osIsNotExist(err) {
 		return err
 	}
 
