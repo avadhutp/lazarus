@@ -25,6 +25,7 @@ func TestAllOk(t *testing.T) {
 		osStatErr    error
 		osIsNotExist bool
 		errMsg       string
+		allOkIsOk    bool
 		msg          string
 	}{
 		{
@@ -32,6 +33,7 @@ func TestAllOk(t *testing.T) {
 			osStatErr:    nil,
 			osIsNotExist: false,
 			errMsg:       "Missing directive in the ini file",
+			allOkIsOk:    false,
 			msg:          "Empty tmp location indicates that the ini file did not contain tmp_location directive",
 		},
 		{
@@ -39,7 +41,16 @@ func TestAllOk(t *testing.T) {
 			osStatErr:    errors.New("File does not exist error"),
 			osIsNotExist: true,
 			errMsg:       "File does not exist error",
+			allOkIsOk:    false,
 			msg:          "File does not exist; bubble up the encountered error",
+		},
+		{
+			tmpLocation:  "something",
+			osStatErr:    nil,
+			osIsNotExist: false,
+			errMsg:       "",
+			allOkIsOk:    true,
+			msg:          "File exists and therefore we should see no errors",
 		},
 	}
 
@@ -56,7 +67,12 @@ func TestAllOk(t *testing.T) {
 
 		actual := sut.AllOk()
 
-		assert.Contains(t, actual.Error(), test.errMsg, test.msg)
+		switch test.allOkIsOk {
+		case true:
+			assert.Nil(t, actual, test.msg)
+		case false:
+			assert.Contains(t, actual.Error(), test.errMsg, test.msg)
+		}
 	}
 
 }
