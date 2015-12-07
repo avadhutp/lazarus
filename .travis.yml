@@ -4,5 +4,14 @@ go:
     - 1.5.1
     - tip
 
+before_install:
+    - go get github.com/onsi/gomega
+    - go get github.com/onsi/ginkgo
+    - go get code.google.com/p/go.tools/cmd/cover
+
 script: 
     - make lint
+    - ./test.sh
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
