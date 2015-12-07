@@ -5,7 +5,9 @@ go:
     - tip
 
 before_install:
-    - go get github.com/stretchr/testify/assert
+    - go get -t github.com/avadhutp/lazarus/ui
+    - go get -t github.com/avadhutp/lazarus/geddit
+    - go get -t github.com/avadhutp/lazarus
     - go get github.com/onsi/gomega
     - go get github.com/onsi/ginkgo
     - go get golang.org/x/tools/cmd/cover
