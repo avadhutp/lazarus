@@ -2,12 +2,13 @@ package ui
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"net/url"
 	"os/exec"
 	"sort"
 	"strings"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
 
 	"github.com/avadhutp/lazarus/geddit"
 )
@@ -31,6 +32,7 @@ type Player struct {
 	Cfg   *Cfg
 }
 
+// Start Re/starts the entire download & play cycle when called; will generally be issued in main() or when the current *Player.startPlayback() loop is done
 func (p *Player) Start(rURL string) {
 	lst := geddit.Get(rURL)
 	p.Music = lst
