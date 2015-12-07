@@ -1,4 +1,4 @@
-# Lazarus [![Build Status](https://drone.io/github.com/avadhutp/lazarus/status.png)](https://drone.io/github.com/avadhutp/lazarus/latest)
+# Lazarus [![Build Status](https://img.shields.io/travis/avadhutp/lazarus/master.svg?style=flat)](https://travis-ci.org/avadhutp/lazarus)
 
 Lazarus plays the most recent *HOT* songs from `r/ListenToThis` subreddit.
 
