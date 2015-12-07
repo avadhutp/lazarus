@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Runs go tests in all subpackages and pushes details out to codecov via travis-ci
+
 set -e
 echo "" > coverage.txt
 
