@@ -1,6 +1,7 @@
 package geddit
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -74,4 +75,42 @@ func TestGetHandlErrors(t *testing.T) {
 	actual := Get(httptest.DefaultRemoteAddr)
 
 	assert.Empty(t, actual)
+}
+
+func TestCleanList(t *testing.T) {
+	testStr := `
+		{
+			"kind" : "Listing",
+			"data" : {
+				"after" : "test-after",
+				"children" : [
+					{
+						"kind" : "t3",
+						"data" : {
+							"domain" : "youtube.com"
+						}	
+					},
+					{
+						"kind" : "t3",
+						"data" : {
+							"domain" : "youtu.be"
+						}	
+					},
+					{
+						"kind" : "t3",
+						"data" : {
+							"domain" : "yo.tube"
+						}	
+					}
+				]
+			}
+		}
+	`
+
+	var input Listing
+	json.Unmarshal([]byte(testStr), &input)
+
+	cleanList(&input)
+
+	assert.Equal(t, 2, len(input.Data.Children), "We started out with 3 chilren; but cleanUp should get rid of one.")
 }
