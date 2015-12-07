@@ -2,6 +2,8 @@
 
 Lazarus plays the most recent *HOT* songs from `r/ListenToThis` subreddit.
 
+![screenshot](http://i.imgur.com/7g6Pscd.png)
+
 # Requirements
 1. youtube-dl
 2. cvlc
