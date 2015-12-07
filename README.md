@@ -1,12 +1,5 @@
 # Lazarus [![Build Status](https://img.shields.io/travis/avadhutp/lazarus/master.svg?style=flat)](https://travis-ci.org/avadhutp/lazarus) [![GoDoc](https://godoc.org/github.com/avadhutp/lazarus?status.png)](https://godoc.org/github.com/avadhutp/lazarus)
 
-#### Coverage
-[![](http://gocover.io/_badge/github.com/avadhutp/lazarus/geddit)](http://gocover.io/github.com/avadhutp/lazarus/geddit) geddit
-
-[![](http://gocover.io/_badge/github.com/avadhutp/lazarus/ui)](http://gocover.io/github.com/avadhutp/lazarus/ui) ui
-
-[![](http://gocover.io/_badge/github.com/avadhutp/lazarus)](http://gocover.io/github.com/avadhutp/lazarus) lazarus-main
-
 Lazarus plays the most recent *HOT* songs from `r/ListenToThis` subreddit.
 
 ![screenshot](http://i.imgur.com/7g6Pscd.png)
@@ -25,3 +18,10 @@ Shortcut | Purpose
 ---------|--------
 q | Quit Lazarus
 s | Skip song
+
+# Coverage
+package | coverage
+--------|--------
+geddit  | [![](http://gocover.io/_badge/github.com/avadhutp/lazarus/geddit)](http://gocover.io/github.com/avadhutp/lazarus/geddit)
+ui      | [![](http://gocover.io/_badge/github.com/avadhutp/lazarus/ui)](http://gocover.io/github.com/avadhutp/lazarus/ui)
+main    | [![](http://gocover.io/_badge/github.com/avadhutp/lazarus)](http://gocover.io/github.com/avadhutp/lazarus)
