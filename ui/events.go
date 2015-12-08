@@ -10,6 +10,7 @@ const (
 var (
 	termuiSendCustomEvt = termui.SendCustomEvt
 	termuiHandle        = termui.Handle
+	termuiStopLoop      = termui.StopLoop
 )
 
 // UpdatePlayer Fires the event to redraw the player
@@ -24,7 +25,7 @@ func FireFinishedRedditDownload(player Player) {
 
 // EventHandler Registers all the event handlers
 func EventHandler() {
-	termuiHandle("/sys/kbd/q", func(termui.Event) { termui.StopLoop() })
+	termuiHandle("/sys/kbd/q", func(termui.Event) { termuiStopLoop() })
 
 	termuiHandle(finishedRedditDownload, paintSongList)
 	termuiHandle(songListUpdated, paintSongList)

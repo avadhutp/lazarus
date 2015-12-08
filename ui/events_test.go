@@ -47,11 +47,20 @@ func TestEventTriggers(t *testing.T) {
 
 func TestEventHandler(t *testing.T) {
 	oldTermuiHandle := termuiHandle
-	defer func() { termuiHandle = oldTermuiHandle }()
+	oldTermuiStopLoop := termuiStopLoop
+	defer func() {
+		termuiHandle = oldTermuiHandle
+		termuiStopLoop = oldTermuiStopLoop
+	}()
 
-	callList := []string{}
+	callList := map[string]func(termui.Event){}
 	termuiHandle = func(evt string, f func(termui.Event)) {
-		callList = append(callList, evt)
+		callList[evt] = f
+	}
+
+	stopLoopCalled := false
+	termuiStopLoop = func() {
+		stopLoopCalled = true
 	}
 
 	EventHandler()
@@ -59,4 +68,7 @@ func TestEventHandler(t *testing.T) {
 	assert.Contains(t, callList, "/sys/kbd/q", "Event handler for keypress q added")
 	assert.Contains(t, callList, finishedRedditDownload, "Event handler for fiinshedRedditDownload added")
 	assert.Contains(t, callList, songListUpdated, "Event handler for songListUpdated added")
+
+	callList["/sys/kbd/q"](termui.Event{})
+	assert.True(t, stopLoopCalled, "Stop loop is called when the *q* key is pressed")
 }
