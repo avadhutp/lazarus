@@ -6,12 +6,15 @@ Lazarus plays the most recent *HOT* songs from `r/ListenToThis` subreddit.
 
 # Requirements
 1. youtube-dl
-2. cvlc
+2. an mp3 players installed, like—
+..* afplayer: on OS X
+..* cvlc: on Linux ((!) note: While using cvlc specify the command as `cvlc --play-and-exit` to avoid stalling Lazarus.)
 
 # Settings
 Lazarus works off of an `ini` file. This supports the following configs:
 
 1. `tmp_location`: The location where Lazarus can download temporary mp3s. Ideally, this location should be absolute as Lazarus does not deal well with relative paths currently. Also, the trailing slash is necessary. Example, `tmp_location = /tmp/lazarus/`.
+2. `player_cmd`: The command-line music player to use for playback. This needs to be installed on your system and accessible by the current user. Try to use one which supports a wide range of formats suchas `m4a`, `mp3`, `opus`, etc. Also, specify the required arguments, if any, along with the command. For example, `player_cmd = cvlc --play-and-exit`.
 
 # Keyboard shortcuts
 Shortcut | Purpose

@@ -21,16 +21,23 @@ const (
 
 // NewPlayer Constructs a new player object with the pre-requisites
 func NewPlayer(cfg *Cfg) Player {
-	p := Player{map[string]*geddit.Children{}, []string{}, cfg}
+	p := Player{}
+	p.cfg = cfg
+
+	playerCmd := strings.Split(cfg.PlayerCmd, " ")
+	p.playerCmd = playerCmd[:1][0]
+	p.playerArgs = playerCmd[1:]
 
 	return p
 }
 
 // Player Datastructure to hold songs and download/play them
 type Player struct {
-	Music map[string]*geddit.Children
-	Keys  []string
-	Cfg   *Cfg
+	Music      map[string]*geddit.Children
+	keys       []string
+	cfg        *Cfg
+	playerCmd  string
+	playerArgs []string
 }
 
 // Start Re/starts the entire download & play cycle when called; will generally be issued in main() or when the current *Player.startPlayback() loop is done
@@ -40,21 +47,21 @@ func (p *Player) Start(rURL string) {
 	FireFinishedRedditDownload(*p)
 
 	go p.startDownloads()
-	// time.Sleep(waitBeforeStartingPlayback)
-	// go p.startPlayback()
+	time.Sleep(waitBeforeStartingPlayback)
+	go p.startPlayback()
 }
 
 // GetKeys Since all the songs are held in a map, to make the order of retrieval deterministic, we set the order ourselves using this func
 func (p *Player) GetKeys() []string {
-	if len(p.Keys) == 0 {
+	if len(p.keys) == 0 {
 		for k := range p.Music {
-			p.Keys = append(p.Keys, k)
+			p.keys = append(p.keys, k)
 		}
 
-		sort.Strings(p.Keys)
+		sort.Strings(p.keys)
 	}
 
-	return p.Keys
+	return p.keys
 }
 
 func (p *Player) startPlayback() {
@@ -80,12 +87,8 @@ func (p *Player) runPlayCmd(el *geddit.Children) {
 	el.IsPlaying()
 	UpdatePlayer(*p)
 
-	args := []string{
-		"--play-and-exit",
-		el.Data.FileLoc,
-	}
-
-	cmd := exec.Command("cvlc", args...)
+	args := append(p.playerArgs, el.Data.FileLoc)
+	cmd := exec.Command(p.playerCmd, args...)
 	cmd.Run()
 
 	el.FinishedPlaying()
@@ -132,15 +135,15 @@ func (p *Player) runDownloadCmd(el *geddit.Children) error {
 }
 
 func (p *Player) getFileLocation(el *geddit.Children) string {
-	return p.Cfg.TmpLocation + el.Data.ID + ".%(ext)s"
+	return p.cfg.TmpLocation + el.Data.ID + ".%(ext)s"
 }
 
 func (p *Player) setFileName(el *geddit.Children) {
-	files, _ := ioutil.ReadDir(p.Cfg.TmpLocation)
+	files, _ := ioutil.ReadDir(p.cfg.TmpLocation)
 
 	for _, f := range files {
 		if strings.Split(f.Name(), ".")[0] == el.Data.ID {
-			el.Data.FileLoc = p.Cfg.TmpLocation + f.Name()
+			el.Data.FileLoc = p.cfg.TmpLocation + f.Name()
 		}
 	}
 }

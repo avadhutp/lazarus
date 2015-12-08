@@ -22,6 +22,7 @@ func TestAllOk(t *testing.T) {
 
 	tests := []struct {
 		tmpLocation  string
+		playerCmd    string
 		osStatErr    error
 		osIsNotExist bool
 		errMsg       string
@@ -30,6 +31,7 @@ func TestAllOk(t *testing.T) {
 	}{
 		{
 			tmpLocation:  "",
+			playerCmd:    "something",
 			osStatErr:    nil,
 			osIsNotExist: false,
 			errMsg:       "Missing directive in the ini file",
@@ -38,6 +40,7 @@ func TestAllOk(t *testing.T) {
 		},
 		{
 			tmpLocation:  "something",
+			playerCmd:    "something",
 			osStatErr:    errors.New("File does not exist error"),
 			osIsNotExist: true,
 			errMsg:       "File does not exist error",
@@ -46,11 +49,21 @@ func TestAllOk(t *testing.T) {
 		},
 		{
 			tmpLocation:  "something",
+			playerCmd:    "something",
 			osStatErr:    nil,
 			osIsNotExist: false,
 			errMsg:       "",
 			allOkIsOk:    true,
 			msg:          "File exists and therefore we should see no errors",
+		},
+		{
+			tmpLocation:  "something",
+			playerCmd:    "",
+			osStatErr:    nil,
+			osIsNotExist: false,
+			errMsg:       "Missing directive in the ini file: player_cmd",
+			allOkIsOk:    false,
+			msg:          "Empty player_cmd should trigger an error",
 		},
 	}
 
@@ -64,6 +77,7 @@ func TestAllOk(t *testing.T) {
 		sut := getSUT()
 
 		sut.TmpLocation = test.tmpLocation
+		sut.PlayerCmd = test.playerCmd
 
 		actual := sut.AllOk()
 

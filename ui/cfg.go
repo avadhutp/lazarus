@@ -13,6 +13,7 @@ var (
 // Cfg Maps to the lazarus config ini file.
 type Cfg struct {
 	TmpLocation string `ini:"tmp_location"`
+	PlayerCmd   string `ini:"player_cmd"`
 	MazSize     string `ini:"max_size"`
 }
 
@@ -22,11 +23,23 @@ func (c *Cfg) AllOk() error {
 		return err
 	}
 
+	if err := c.isPlayerCmdOk(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (c *Cfg) isTmpLocationOk() error {
 	return isLocationOk(c.TmpLocation, "tmp_location")
+}
+
+func (c *Cfg) isPlayerCmdOk() error {
+	if c.PlayerCmd == "" {
+		return fmt.Errorf("Missing directive in the ini file: player_cmd")
+	}
+
+	return nil
 }
 
 func isLocationOk(loc string, name string) error {
