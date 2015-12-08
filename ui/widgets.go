@@ -14,10 +14,11 @@ var (
 	Songs = songsWidget()
 	// Title Is a widget to display the title of the prog
 	Title = titleWidget()
-)
+	// Refresh Re-draws the widgets after something in them changes
+	Refresh = func() { termui.Body.Align(); termui.Render(termui.Body) }
 
-// Refresh Re-draws the widgets after something in them changes
-func Refresh() { termui.Body.Align(); termui.Render(termui.Body) }
+	songsPadding = 2
+)
 
 // titleWidget Provides the title bar
 func titleWidget() *termui.Gauge {
@@ -89,7 +90,7 @@ func paintSongList(e termui.Event) {
 	}
 
 	Songs.Items = songs
-	Songs.Height = len(songs) + 2
+	Songs.Height = len(songs) + songsPadding
 
 	Refresh()
 }
