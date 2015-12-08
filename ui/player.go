@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/url"
 	"os/exec"
 	"sort"
@@ -81,7 +82,7 @@ func (p *Player) runPlayCmd(el *geddit.Children) {
 
 	args := []string{
 		"--play-and-exit",
-		p.getFileLocation(el),
+		el.Data.FileLoc,
 	}
 
 	cmd := exec.Command("cvlc", args...)
@@ -123,6 +124,8 @@ func (p *Player) runDownloadCmd(el *geddit.Children) error {
 
 	if err != nil {
 		log.Error(fmt.Sprintf("Cannot download %s; Error encountered: %s", el.Data.URL, err.Error()))
+	} else {
+		p.setFileName(el)
 	}
 
 	return err
@@ -130,6 +133,16 @@ func (p *Player) runDownloadCmd(el *geddit.Children) error {
 
 func (p *Player) getFileLocation(el *geddit.Children) string {
 	return p.Cfg.TmpLocation + el.Data.ID + ".%(ext)s"
+}
+
+func (p *Player) setFileName(el *geddit.Children) {
+	files, _ := ioutil.ReadDir(p.Cfg.TmpLocation)
+
+	for _, f := range files {
+		if strings.Split(f.Name(), ".")[0] == el.Data.ID {
+			el.Data.FileLoc = p.Cfg.TmpLocation + f.Name()
+		}
+	}
 }
 
 func expandYoutubeURL(URL string) string {

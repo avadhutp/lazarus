@@ -26,13 +26,14 @@ type Listing struct {
 type Children struct {
 	Kind string `json:"kind"`
 	Data struct {
-		Domain string `json:"domain"`
-		URL    string `json:"url"`
-		Title  string `json:"title"`
-		Genre  string `json:"link_flair_text"`
-		ID     string `json:"id"`
-		Played bool
-		Status int
+		Domain  string `json:"domain"`
+		URL     string `json:"url"`
+		Title   string `json:"title"`
+		Genre   string `json:"link_flair_text"`
+		ID      string `json:"id"`
+		Played  bool
+		Status  int
+		FileLoc string
 	} `json:"data"`
 }
 
