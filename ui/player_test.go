@@ -5,6 +5,17 @@ import (
 	"testing"
 )
 
+func TestNewPlayer(t *testing.T) {
+	cfg := &Cfg{}
+	cfg.PlayerCmd = "testcmd testargs"
+
+	p := NewPlayer(cfg)
+
+	assert.Equal(t, cfg, p.cfg)
+	assert.Equal(t, "testcmd", p.playerCmd)
+	assert.Equal(t, []string{"testargs"}, p.playerArgs)
+}
+
 func TestExpandYoutubeURL(t *testing.T) {
 	tests := []struct {
 		in       string
