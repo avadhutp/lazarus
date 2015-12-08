@@ -39,8 +39,8 @@ func (p *Player) Start(rURL string) {
 	FireFinishedRedditDownload(*p)
 
 	go p.startDownloads()
-	time.Sleep(waitBeforeStartingPlayback)
-	go p.startPlayback()
+	// time.Sleep(waitBeforeStartingPlayback)
+	// go p.startPlayback()
 }
 
 // GetKeys Since all the songs are held in a map, to make the order of retrieval deterministic, we set the order ourselves using this func
@@ -116,8 +116,6 @@ func (p *Player) runDownloadCmd(el *geddit.Children) error {
 		"--extract-audio",
 		"-o",
 		p.getFileLocation(el),
-		"--audio-format",
-		"mp3",
 		expandYoutubeURL(el.Data.URL),
 	}
 	cmd := exec.Command("youtube-dl", args...)
@@ -131,7 +129,7 @@ func (p *Player) runDownloadCmd(el *geddit.Children) error {
 }
 
 func (p *Player) getFileLocation(el *geddit.Children) string {
-	return p.Cfg.TmpLocation + el.Data.ID + ".mp3"
+	return p.Cfg.TmpLocation + el.Data.ID + ".%(ext)s"
 }
 
 func expandYoutubeURL(URL string) string {
