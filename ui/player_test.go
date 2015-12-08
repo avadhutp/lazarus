@@ -21,6 +21,11 @@ func TestExpandYoutubeURL(t *testing.T) {
 			expected: "http://[fe80::%31%25en0]:8080/",
 			msg:      "Invalid url fails url.Parse and therefore should be returned as is",
 		},
+		{
+			in:       "http://www.soundcloud.com/test",
+			expected: "http://www.soundcloud.com/test",
+			msg:      "Not a youtube URL, so should be returned as is",
+		},
 	}
 
 	for _, test := range tests {
