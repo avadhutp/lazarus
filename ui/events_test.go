@@ -54,6 +54,23 @@ func TestEventTriggers(t *testing.T) {
 
 func TestEventHandler(t *testing.T) {
 	oldTermuiHandle := termuiHandle
+	defer func() {
+		termuiHandle = oldTermuiHandle
+	}()
+
+	callList := map[string]func(termui.Event){}
+	termuiHandle = func(evt string, f func(termui.Event)) {
+		callList[evt] = f
+	}
+
+	EventHandler()
+
+	assert.Contains(t, callList, finishedRedditDownload, "Event handler for fiinshedRedditDownload added")
+	assert.Contains(t, callList, songListUpdated, "Event handler for songListUpdated added")
+}
+
+func TestPlayerControlEventHandler(t *testing.T) {
+	oldTermuiHandle := termuiHandle
 	oldTermuiStopLoop := termuiStopLoop
 	defer func() {
 		termuiHandle = oldTermuiHandle
@@ -70,33 +87,16 @@ func TestEventHandler(t *testing.T) {
 		stopLoopCalled = true
 	}
 
-	EventHandler()
-
-	assert.Contains(t, callList, "/sys/kbd/q", "Event handler for keypress q added")
-	assert.Contains(t, callList, finishedRedditDownload, "Event handler for fiinshedRedditDownload added")
-	assert.Contains(t, callList, songListUpdated, "Event handler for songListUpdated added")
-
-	callList["/sys/kbd/q"](termui.Event{})
-	assert.True(t, stopLoopCalled, "Stop loop is called when the *q* key is pressed")
-}
-
-func TestPlayerControlEventHandler(t *testing.T) {
-	oldTermuiHandle := termuiHandle
-	defer func() {
-		termuiHandle = oldTermuiHandle
-	}()
-
-	callList := map[string]func(termui.Event){}
-	termuiHandle = func(evt string, f func(termui.Event)) {
-		callList[evt] = f
-	}
-
 	sut := new(MockPlayer)
 
 	PlayerControlEventHandler(sut)
 
-	assert.Contains(t, callList, "/sys/kbd/s")
+	assert.Contains(t, callList, "/sys/kbd/s", "Event handler for keypress s (skip) added")
+	assert.Contains(t, callList, "/sys/kbd/q", "Event handler for keypress q (quit) added")
 
 	callList["/sys/kbd/s"](termui.Event{})
 	assert.True(t, sut.skipCalled, "Skip should be called when the event is fired")
+
+	callList["/sys/kbd/q"](termui.Event{})
+	assert.True(t, stopLoopCalled, "Stop loop is called when the *q* key is pressed")
 }

@@ -23,10 +23,8 @@ func FireFinishedRedditDownload(player Player) {
 	termuiSendCustomEvt(finishedRedditDownload, player)
 }
 
-// EventHandler Registers all the event handlers
+// EventHandler Registers all the global event handlers
 func EventHandler() {
-	termuiHandle("/sys/kbd/q", func(termui.Event) { termuiStopLoop() })
-
 	termuiHandle(finishedRedditDownload, paintSongList)
 	termuiHandle(songListUpdated, paintSongList)
 }
@@ -34,4 +32,5 @@ func EventHandler() {
 // PlayerControlEventHandler Adds keyboard controls to control the player's playback
 func PlayerControlEventHandler(player PlayerInterface) {
 	termuiHandle("/sys/kbd/s", func(termui.Event) { player.Skip() })
+	termuiHandle("/sys/kbd/q", func(termui.Event) { player.Skip(); termuiStopLoop() })
 }
