@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/url"
+	"os"
 	"os/exec"
 	"sort"
 	"strings"
@@ -12,6 +13,11 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/avadhutp/lazarus/geddit"
+)
+
+// DI
+var (
+	pKill = (*os.Process).Kill
 )
 
 const (
@@ -64,7 +70,9 @@ func (p *Player) Start() {
 
 // Skip skips the currently playing song
 func (p *Player) Skip() {
-	p.currSong.Process.Kill()
+	if p.currSong != nil {
+		pKill(p.currSong.Process)
+	}
 }
 
 // GetKeys Since all the songs are held in a map, to make the order of retrieval deterministic, we set the order ourselves using this func

@@ -1,8 +1,11 @@
 package ui
 
 import (
-	"github.com/stretchr/testify/assert"
+	"os"
+	"os/exec"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewPlayer(t *testing.T) {
@@ -42,5 +45,41 @@ func TestExpandYoutubeURL(t *testing.T) {
 	for _, test := range tests {
 		actual := expandYoutubeURL(test.in)
 		assert.Equal(t, test.expected, actual, test.msg)
+	}
+}
+
+func TestPlayerSkip(t *testing.T) {
+	oldPKill := pKill
+	defer func() { pKill = oldPKill }()
+
+	pKillCalled := false
+	pKill = func(p *os.Process) error {
+		pKillCalled = true
+		return nil
+	}
+
+	tests := []struct {
+		initialVal      *exec.Cmd
+		shouldCallPKill bool
+		msg             string
+	}{
+		{
+			initialVal:      nil,
+			shouldCallPKill: false,
+			msg:             "No current song, so do not call pKill",
+		},
+		{
+			initialVal:      &exec.Cmd{},
+			shouldCallPKill: true,
+			msg:             "Current song playing, so should call pKill",
+		},
+	}
+
+	for _, test := range tests {
+		sut := Player{}
+		sut.currSong = test.initialVal
+		sut.Skip()
+
+		assert.Equal(t, test.shouldCallPKill, pKillCalled, test.msg)
 	}
 }
