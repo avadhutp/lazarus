@@ -45,7 +45,7 @@ func start(ctx *cli.Context) {
 
 	ui.EventHandler()
 	render(ctx)
-	go downloadPlaylist(cfg)
+	go startPlayer(cfg)
 
 	defer termui.Close()
 	ui.Refresh()
@@ -88,9 +88,8 @@ func render(ctx *cli.Context) {
 	)
 }
 
-// downloadPlaylist Downloads the playlist from reddit and initiates the player
-func downloadPlaylist(cfg *ui.Cfg) {
+func startPlayer(cfg *ui.Cfg) {
 	player := ui.NewPlayer(cfg)
 
-	player.Start(hots)
+	player.Start()
 }

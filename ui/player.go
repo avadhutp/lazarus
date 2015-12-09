@@ -18,7 +18,7 @@ const (
 	waitBeforeStartingPlayback = 5 * time.Second
 	waitOnDownloadingSong      = 5 * time.Second
 
-	redditURL = "https://www.reddit.com/%s/hot.json?sort=hot"
+	redditURL = "https://www.reddit.com/%s/hot.json?sort=hot&after=%s"
 	subreddit = "r/listentothis"
 )
 
@@ -37,7 +37,7 @@ func NewPlayer(cfg *Cfg) Player {
 // Player Datastructure to hold songs and download/play them
 type Player struct {
 	Music      map[string]*geddit.Children
-	redditURL  string
+	after      string
 	keys       []string
 	cfg        *Cfg
 	playerCmd  string
@@ -45,14 +45,24 @@ type Player struct {
 }
 
 // Start Re/starts the entire download & play cycle when called; will generally be issued in main() or when the current *Player.startPlayback() loop is done
-func (p *Player) Start(rURL string) {
-	_, lst := geddit.Get(rURL)
-	p.Music = lst
+func (p *Player) Start() {
+	p.after, p.Music = geddit.Get(p.getRedditURL())
 	FireFinishedRedditDownload(*p)
 
 	go p.startDownloads()
 	time.Sleep(waitBeforeStartingPlayback)
 	go p.startPlayback()
+}
+
+func (p *Player) restart() {
+	p.Music = make(map[string]*geddit.Children)
+	p.keys = make([]string, 0)
+
+	p.Start()
+}
+
+func (p *Player) getRedditURL() string {
+	return fmt.Sprintf(redditURL, subreddit, p.after)
 }
 
 // GetKeys Since all the songs are held in a map, to make the order of retrieval deterministic, we set the order ourselves using this func
@@ -103,6 +113,8 @@ func (p *Player) startDownloads() {
 	for _, k := range p.GetKeys() {
 		p.download(p.Music[k])
 	}
+
+	p.restart()
 }
 
 func (p *Player) download(el *geddit.Children) {
