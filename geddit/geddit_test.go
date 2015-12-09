@@ -39,13 +39,14 @@ func TestGet(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	actual := Get(ts.URL)
+	after, actual := Get(ts.URL)
 
 	assert.Equal(t, "youtube.com", actual["12345"].Data.Domain)
 	assert.Equal(t, "youtube.com/url/test", actual["12345"].Data.URL)
 	assert.Equal(t, "test-genre", actual["12345"].Data.Genre)
 	assert.Equal(t, "Test song title", actual["12345"].Data.Title)
 	assert.Equal(t, "12345", actual["12345"].Data.ID)
+	assert.Equal(t, "test-after", after)
 }
 
 func TestGetHandleServerErrors(t *testing.T) {
@@ -66,15 +67,18 @@ func TestGetHandleServerErrors(t *testing.T) {
 		}))
 		defer ts.Close()
 
-		actual := Get(ts.URL)
+		after, actual := Get(ts.URL)
+
 		assert.Empty(t, actual, test.msg)
+		assert.Empty(t, after, test.msg)
 	}
 }
 
 func TestGetHandlErrors(t *testing.T) {
-	actual := Get(httptest.DefaultRemoteAddr)
+	after, actual := Get(httptest.DefaultRemoteAddr)
 
 	assert.Empty(t, actual)
+	assert.Empty(t, after)
 }
 
 func TestCleanList(t *testing.T) {

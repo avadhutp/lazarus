@@ -8,7 +8,7 @@ import (
 )
 
 // Get Hit the feed URL and get a struct of items ready for display/download/play in lazarus
-func Get(rURL string) (music map[string]*Children) {
+func Get(rURL string) (after string, music map[string]*Children) {
 	r, err := http.Get(rURL)
 
 	if err != nil {
@@ -33,7 +33,7 @@ func Get(rURL string) (music map[string]*Children) {
 	}
 
 	// cleanList(&lst)
-	music = makeMap(lst)
+	after, music = lst.Data.After, makeMap(lst)
 
 	return
 }

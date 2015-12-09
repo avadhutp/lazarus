@@ -17,6 +17,9 @@ import (
 const (
 	waitBeforeStartingPlayback = 5 * time.Second
 	waitOnDownloadingSong      = 5 * time.Second
+
+	redditURL = "https://www.reddit.com/%s/hot.json?sort=hot"
+	subreddit = "r/listentothis"
 )
 
 // NewPlayer Constructs a new player object with the pre-requisites
@@ -34,6 +37,7 @@ func NewPlayer(cfg *Cfg) Player {
 // Player Datastructure to hold songs and download/play them
 type Player struct {
 	Music      map[string]*geddit.Children
+	redditURL  string
 	keys       []string
 	cfg        *Cfg
 	playerCmd  string
@@ -42,7 +46,7 @@ type Player struct {
 
 // Start Re/starts the entire download & play cycle when called; will generally be issued in main() or when the current *Player.startPlayback() loop is done
 func (p *Player) Start(rURL string) {
-	lst := geddit.Get(rURL)
+	_, lst := geddit.Get(rURL)
 	p.Music = lst
 	FireFinishedRedditDownload(*p)
 
