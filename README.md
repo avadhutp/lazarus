@@ -22,10 +22,3 @@ Shortcut | Purpose
 ---------|--------
 q | Quit Lazarus
 s | Skip song
-
-# Coverage
-package | coverage
---------|--------
-geddit  | [![](http://gocover.io/_badge/github.com/avadhutp/lazarus/geddit)](http://gocover.io/github.com/avadhutp/lazarus/geddit)
-ui      | [![](http://gocover.io/_badge/github.com/avadhutp/lazarus/ui)](http://gocover.io/github.com/avadhutp/lazarus/ui)
-main    | [![](http://gocover.io/_badge/github.com/avadhutp/lazarus)](http://gocover.io/github.com/avadhutp/lazarus)
