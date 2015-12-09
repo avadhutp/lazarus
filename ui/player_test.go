@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"testing"
@@ -54,9 +55,14 @@ func TestPlayerSkip(t *testing.T) {
 
 	pKillCalled := false
 	pKill = func(p *os.Process) error {
+		fmt.Println(fmt.Sprintf("Process: %d", p.Pid))
 		pKillCalled = true
 		return nil
 	}
+
+	p := &os.Process{}
+	testCmd := &exec.Cmd{}
+	testCmd.Process = p
 
 	tests := []struct {
 		initialVal      *exec.Cmd
@@ -69,7 +75,7 @@ func TestPlayerSkip(t *testing.T) {
 			msg:             "No current song, so do not call pKill",
 		},
 		{
-			initialVal:      &exec.Cmd{},
+			initialVal:      testCmd,
 			shouldCallPKill: true,
 			msg:             "Current song playing, so should call pKill",
 		},
