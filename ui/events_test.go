@@ -4,9 +4,16 @@ import (
 	"testing"
 
 	"github.com/gizak/termui"
-
 	"github.com/stretchr/testify/assert"
 )
+
+type MockPlayer struct {
+	skipCalled bool
+}
+
+func (m *MockPlayer) Skip()             { m.skipCalled = true }
+func (m *MockPlayer) Start()            {}
+func (m *MockPlayer) GetKeys() []string { return nil }
 
 func TestEventTriggers(t *testing.T) {
 	oldTermuiSendCustomEvt := termuiSendCustomEvt
@@ -71,4 +78,25 @@ func TestEventHandler(t *testing.T) {
 
 	callList["/sys/kbd/q"](termui.Event{})
 	assert.True(t, stopLoopCalled, "Stop loop is called when the *q* key is pressed")
+}
+
+func TestPlayerControlEventHandler(t *testing.T) {
+	oldTermuiHandle := termuiHandle
+	defer func() {
+		termuiHandle = oldTermuiHandle
+	}()
+
+	callList := map[string]func(termui.Event){}
+	termuiHandle = func(evt string, f func(termui.Event)) {
+		callList[evt] = f
+	}
+
+	sut := new(MockPlayer)
+
+	PlayerControlEventHandler(sut)
+
+	assert.Contains(t, callList, "/sys/kbd/s")
+
+	callList["/sys/kbd/s"](termui.Event{})
+	assert.True(t, sut.skipCalled, "Skip should be called when the event is fired")
 }

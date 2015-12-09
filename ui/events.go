@@ -33,5 +33,5 @@ func EventHandler() {
 
 // PlayerControlEventHandler Adds keyboard controls to control the player's playback
 func PlayerControlEventHandler(player PlayerInterface) {
-	termuiHandle("sys/kbd/s", func(termui.Event) { player.Skip() })
+	termuiHandle("/sys/kbd/s", func(termui.Event) { player.Skip() })
 }
