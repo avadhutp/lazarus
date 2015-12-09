@@ -22,6 +22,13 @@ const (
 	subreddit = "r/listentothis"
 )
 
+// PlayerInterface Makes testing easier
+type PlayerInterface interface {
+	Start()
+	Skip()
+	GetKeys() []string
+}
+
 // NewPlayer Constructs a new player object with the pre-requisites
 func NewPlayer(cfg *Cfg) Player {
 	p := Player{}
@@ -40,6 +47,7 @@ type Player struct {
 	after      string
 	keys       []string
 	cfg        *Cfg
+	currSong   *exec.Cmd
 	playerCmd  string
 	playerArgs []string
 }
@@ -54,15 +62,9 @@ func (p *Player) Start() {
 	go p.startPlayback()
 }
 
-func (p *Player) restart() {
-	p.Music = make(map[string]*geddit.Children)
-	p.keys = make([]string, 0)
-
-	p.Start()
-}
-
-func (p *Player) getRedditURL() string {
-	return fmt.Sprintf(redditURL, subreddit, p.after)
+// Skip skips the currently playing song
+func (p *Player) Skip() {
+	p.currSong.Process.Kill()
 }
 
 // GetKeys Since all the songs are held in a map, to make the order of retrieval deterministic, we set the order ourselves using this func
@@ -76,6 +78,17 @@ func (p *Player) GetKeys() []string {
 	}
 
 	return p.keys
+}
+
+func (p *Player) restart() {
+	p.Music = make(map[string]*geddit.Children)
+	p.keys = make([]string, 0)
+
+	p.Start()
+}
+
+func (p *Player) getRedditURL() string {
+	return fmt.Sprintf(redditURL, subreddit, p.after)
 }
 
 func (p *Player) startPlayback() {
@@ -103,6 +116,7 @@ func (p *Player) runPlayCmd(el *geddit.Children) {
 
 	args := append(p.playerArgs, el.Data.FileLoc)
 	cmd := exec.Command(p.playerCmd, args...)
+	p.currSong = cmd
 	cmd.Run()
 
 	el.FinishedPlaying()

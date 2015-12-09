@@ -90,6 +90,7 @@ func render(ctx *cli.Context) {
 
 func startPlayer(cfg *ui.Cfg) {
 	player := ui.NewPlayer(cfg)
+	ui.PlayerControlEventHandler(&player)
 
 	player.Start()
 }
