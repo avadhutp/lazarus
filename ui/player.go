@@ -103,6 +103,7 @@ func (p *Player) startPlayback() {
 	for _, k := range p.GetKeys() {
 		p.play(p.Music[k])
 	}
+	p.restart()
 }
 
 func (p *Player) play(el *geddit.Children) {
@@ -135,8 +136,6 @@ func (p *Player) startDownloads() {
 	for _, k := range p.GetKeys() {
 		p.download(p.Music[k])
 	}
-
-	p.restart()
 }
 
 func (p *Player) download(el *geddit.Children) {
