@@ -5,7 +5,7 @@ Lazarus plays the most recent *HOT* songs from `r/ListenToThis` subreddit.
 ![screenshot](http://i.imgur.com/7g6Pscd.png)
 
 # Requirements
-1. `youtube-dl`
+1. `youtube-dl` ([download instructions](https://rg3.github.io/youtube-dl/))
 2. any terminal-based mp3 player like
   * `afplayer`: on OS X (installed by default)
   * `cvlc`: on Linux (:warning:note: While using cvlc specify the command as `cvlc --play-and-exit` to avoid stalling Lazarus.)
