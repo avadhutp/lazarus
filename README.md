@@ -12,7 +12,7 @@ Lazarus plays the most recent *HOT* songs from `r/ListenToThis` subreddit.
   * `mplayer`
 
 # Installation
-1. Create an `ini` settings file as shown in the *Settings* section of this readme
+1. Create an `ini` settings file as shown in the [settings](#settings) section of this readme
 2. Put it in `/etc/lazarus.ini`. Optionally, you can pass the location of the ini file to Lazarus at run time
 3. Download Lazarus: `go get github.com/avadhut/lazarus`
 4. Run it as:
