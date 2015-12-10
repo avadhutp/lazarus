@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -12,10 +13,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type TestFileInfo struct{}
+type TestFileInfo struct {
+	name string
+}
 
 func (t *TestFileInfo) Name() string {
-	return "testfile.mp3"
+	return t.name
 }
 
 func (t *TestFileInfo) Size() int64 {
@@ -146,31 +149,80 @@ func TestPlayerDownload(t *testing.T) {
 	}()
 
 	cmd := &exec.Cmd{}
+	execCommandCalled := false
 	execCommand = func(command string, args ...string) *exec.Cmd {
+		execCommandCalled = true
 		return cmd
 	}
 
-	cmdRun = func(c *exec.Cmd) error {
-		return nil
+	cmdRunCalled := false
+
+	logErrorCalled := false
+	logError = func(msg ...interface{}) {
+		logErrorCalled = true
 	}
 
-	logError = func(msg ...interface{}) {}
-	termuiSendCustomEvt = func(evt string, i interface{}) {}
+	termuiSendCustomEvtCalled := []string{}
+	termuiSendCustomEvt = func(evt string, i interface{}) {
+		termuiSendCustomEvtCalled = append(termuiSendCustomEvtCalled, "called")
+	}
 
-	f := &TestFileInfo{}
+	f := &TestFileInfo{name: "12345.mp3"}
 	ioutilReaddir = func(dir string) (files []os.FileInfo, err error) {
 		files = append(files, f)
 		return
 	}
 
 	cfg := &Cfg{}
-	cfg.TmpLocation = "/tmp/location"
+	cfg.TmpLocation = "/tmp/location/"
 
-	p := &Player{}
-	p.cfg = cfg
+	tests := []struct {
+		downloadErr      error
+		expectedStatus   int
+		expectedFileLoc  string
+		isLogErrorCalled bool
+		msg              string
+	}{
+		{
+			downloadErr:      nil,
+			expectedStatus:   geddit.Downloaded,
+			expectedFileLoc:  "/tmp/location/12345.mp3",
+			isLogErrorCalled: false,
+			msg:              "Download was successfull, so status and fileLoc should be appropriately set",
+		},
+		{
+			downloadErr:      errors.New("Test error"),
+			expectedStatus:   geddit.NotDownloaded,
+			expectedFileLoc:  "",
+			isLogErrorCalled: true,
+			msg:              "Download was unsuccessfull, so status and fileLoc should be appropriately set",
+		},
+	}
 
-	p.download(&el)
+	for _, test := range tests {
+		execCommandCalled = false
+		cmdRunCalled = false
+		termuiSendCustomEvtCalled = []string{}
+		logErrorCalled = false
 
-	assert.Equal(t, el.Data.Status, geddit.Downloaded)
-	assert.Equal(t, el.Data.FileLoc, "actual")
+		el.Data.FileLoc = ""
+		el.Data.Status = 0
+
+		cmdRun = func(c *exec.Cmd) error {
+			cmdRunCalled = true
+			return test.downloadErr
+		}
+
+		p := &Player{}
+		p.cfg = cfg
+
+		p.download(&el)
+
+		assert.Equal(t, test.expectedStatus, el.Data.Status, test.msg)
+		assert.Equal(t, test.expectedFileLoc, el.Data.FileLoc, test.msg)
+		assert.True(t, execCommandCalled, "Should always be called")
+		assert.True(t, cmdRunCalled, "Should always be called")
+		assert.Len(t, termuiSendCustomEvtCalled, 2, "Should be called twice to update the player before and after attempting download")
+		assert.Equal(t, test.isLogErrorCalled, logErrorCalled)
+	}
 }
