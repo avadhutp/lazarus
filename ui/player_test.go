@@ -333,3 +333,12 @@ func TestPlayerPlar(t *testing.T) {
 		assert.Equal(t, test.isSleepCalled, sleepCalled, test.msg)
 	}
 }
+
+func TestPlayerGetRedditURL(t *testing.T) {
+	p := &Player{}
+	p.after = "afterhash"
+
+	actual := p.getRedditURL()
+
+	assert.Equal(t, "http://www.reddit.com/r/listentothis/hot.json?sort=hot&after=afterhash", actual)
+}

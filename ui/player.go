@@ -29,7 +29,7 @@ const (
 	waitBeforeStartingPlayback = 5 * time.Second
 	waitOnDownloadingSong      = 5 * time.Second
 
-	redditURL = "https://www.reddit.com/%s/hot.json?sort=hot&after=%s"
+	redditURL = "http://www.reddit.com/%s/hot.json?sort=hot&after=%s"
 	subreddit = "r/listentothis"
 )
 
