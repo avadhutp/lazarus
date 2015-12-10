@@ -172,4 +172,5 @@ func TestPlayerDownload(t *testing.T) {
 	p.download(&el)
 
 	assert.Equal(t, el.Data.Status, geddit.Downloaded)
+	assert.Equal(t, el.Data.FileLoc, "actual")
 }
