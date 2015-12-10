@@ -16,8 +16,8 @@ Lazarus plays the most recent *HOT* songs from `r/ListenToThis` subreddit.
 2. Put it in `/etc/lazarus.ini`. Optionally, you can pass the location of the ini file to Lazarus at run time
 3. Download Lazarus: `go get github.com/avadhut/lazarus`
 4. Run it as:
-..1 If the ini file is in the default location (`/etc/lazarus.ini`), then simply issue `lazarus`
-..2 Else, issue `lazarus --config /some/other/location/lazarus.ini`
+  1. If the ini file is in the default location (`/etc/lazarus.ini`), then simply issue `lazarus`
+  2. Else, issue `lazarus --config /some/other/location/lazarus.ini`
 
 # Settings
 Lazarus works off of an `ini` file. This supports the following configs:
