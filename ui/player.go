@@ -17,7 +17,12 @@ import (
 
 // DI
 var (
-	pKill = (*os.Process).Kill
+	pKill         = (*os.Process).Kill
+	sleep         = time.Sleep
+	execCommand   = exec.Command
+	cmdRun        = (*exec.Cmd).Run
+	logError      = log.Error
+	ioutilReaddir = ioutil.ReadDir
 )
 
 const (
@@ -64,7 +69,7 @@ func (p *Player) Start() {
 	FireFinishedRedditDownload(*p)
 
 	go p.startDownloads()
-	time.Sleep(waitBeforeStartingPlayback)
+	sleep(waitBeforeStartingPlayback)
 	go p.startPlayback()
 }
 
@@ -112,7 +117,7 @@ func (p *Player) play(el *geddit.Children) {
 	case geddit.NotDownloaded:
 		return
 	case geddit.IsDownloading:
-		time.Sleep(waitOnDownloadingSong)
+		sleep(waitOnDownloadingSong)
 		p.play(el)
 	case geddit.Downloaded:
 		p.runPlayCmd(el)
@@ -159,11 +164,11 @@ func (p *Player) runDownloadCmd(el *geddit.Children) error {
 		p.getFileLocation(el),
 		expandYoutubeURL(el.Data.URL),
 	}
-	cmd := exec.Command("youtube-dl", args...)
-	err := cmd.Run()
+	cmd := execCommand("youtube-dl", args...)
+	err := cmdRun(cmd)
 
 	if err != nil {
-		log.Error(fmt.Sprintf("Cannot download %s; Error encountered: %s", el.Data.URL, err.Error()))
+		logError(fmt.Sprintf("Cannot download %s; Error encountered: %s", el.Data.URL, err.Error()))
 	} else {
 		p.setFileName(el)
 	}
@@ -176,7 +181,7 @@ func (p *Player) getFileLocation(el *geddit.Children) string {
 }
 
 func (p *Player) setFileName(el *geddit.Children) {
-	files, _ := ioutil.ReadDir(p.cfg.TmpLocation)
+	files, _ := ioutilReaddir(p.cfg.TmpLocation)
 
 	for _, f := range files {
 		if strings.Split(f.Name(), ".")[0] == el.Data.ID {

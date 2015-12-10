@@ -22,19 +22,22 @@ type Listing struct {
 	} `json:"data"`
 }
 
+// ChildData Info associated with each song/entry
+type ChildData struct {
+	Domain  string `json:"domain"`
+	URL     string `json:"url"`
+	Title   string `json:"title"`
+	Genre   string `json:"link_flair_text"`
+	ID      string `json:"id"`
+	Played  bool
+	Status  int
+	FileLoc string
+}
+
 // Children sub-structure mapping the json returned by reddit's API
 type Children struct {
-	Kind string `json:"kind"`
-	Data struct {
-		Domain  string `json:"domain"`
-		URL     string `json:"url"`
-		Title   string `json:"title"`
-		Genre   string `json:"link_flair_text"`
-		ID      string `json:"id"`
-		Played  bool
-		Status  int
-		FileLoc string
-	} `json:"data"`
+	Kind string    `json:"kind"`
+	Data ChildData `json:"data"`
 }
 
 // IsDownloading Set the status of the song to being downloaded

@@ -5,9 +5,38 @@ import (
 	"os"
 	"os/exec"
 	"testing"
+	"time"
+
+	"github.com/avadhutp/lazarus/geddit"
 
 	"github.com/stretchr/testify/assert"
 )
+
+type TestFileInfo struct{}
+
+func (t *TestFileInfo) Name() string {
+	return "testfile.mp3"
+}
+
+func (t *TestFileInfo) Size() int64 {
+	return 0
+}
+
+func (t *TestFileInfo) Mode() os.FileMode {
+	return os.ModeDir
+}
+
+func (t *TestFileInfo) ModTime() time.Time {
+	return time.Now()
+}
+
+func (t *TestFileInfo) IsDir() bool {
+	return false
+}
+
+func (t *TestFileInfo) Sys() interface{} {
+	return false
+}
 
 func TestNewPlayer(t *testing.T) {
 	cfg := &Cfg{}
@@ -88,4 +117,59 @@ func TestPlayerSkip(t *testing.T) {
 
 		assert.Equal(t, test.shouldCallPKill, pKillCalled, test.msg)
 	}
+}
+
+func TestPlayerDownload(t *testing.T) {
+	data := geddit.ChildData{
+		Domain: "youtube.com",
+		URL:    "http://www.youtube.com/",
+		Title:  "Test song title",
+		Genre:  "Hip-hop",
+		ID:     "12345",
+	}
+	el := geddit.Children{
+		Kind: "T3",
+		Data: data,
+	}
+
+	oldExecCommand := execCommand
+	oldCmdRun := cmdRun
+	oldLogError := logError
+	oldIoutilReaddir := ioutilReaddir
+	oldTermuiSendCustomEvt := termuiSendCustomEvt
+	defer func() {
+		execCommand = oldExecCommand
+		cmdRun = oldCmdRun
+		logError = oldLogError
+		ioutilReaddir = oldIoutilReaddir
+		termuiSendCustomEvt = oldTermuiSendCustomEvt
+	}()
+
+	cmd := &exec.Cmd{}
+	execCommand = func(command string, args ...string) *exec.Cmd {
+		return cmd
+	}
+
+	cmdRun = func(c *exec.Cmd) error {
+		return nil
+	}
+
+	logError = func(msg ...interface{}) {}
+	termuiSendCustomEvt = func(evt string, i interface{}) {}
+
+	f := &TestFileInfo{}
+	ioutilReaddir = func(dir string) (files []os.FileInfo, err error) {
+		files = append(files, f)
+		return
+	}
+
+	cfg := &Cfg{}
+	cfg.TmpLocation = "/tmp/location"
+
+	p := &Player{}
+	p.cfg = cfg
+
+	p.download(&el)
+
+	assert.Equal(t, el.Data.Status, geddit.Downloaded)
 }
