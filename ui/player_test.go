@@ -273,28 +273,39 @@ func TestPlayerPlar(t *testing.T) {
 
 	sleepCalled := false
 	sleep = func(t time.Duration) {
+		el.Data.Status = geddit.Downloaded
 		sleepCalled = true
 	}
 
 	tests := []struct {
 		initialStatus   int
 		isPlayCmdCalled bool
+		isSleepCalled   bool
 		msg             string
 	}{
 		{
 			initialStatus:   geddit.IsPlayed,
 			isPlayCmdCalled: false,
+			isSleepCalled:   false,
 			msg:             "Song is already played",
 		},
 		{
 			initialStatus:   geddit.NotDownloaded,
 			isPlayCmdCalled: false,
+			isSleepCalled:   false,
 			msg:             "Song download failed",
 		},
 		{
 			initialStatus:   geddit.Downloaded,
 			isPlayCmdCalled: true,
+			isSleepCalled:   false,
 			msg:             "Song has been downloaded, it should be played",
+		},
+		{
+			initialStatus:   geddit.IsDownloading,
+			isPlayCmdCalled: true,
+			isSleepCalled:   true,
+			msg:             "Song is downloading, sleep should be called and it should play on retry",
 		},
 	}
 
@@ -319,6 +330,6 @@ func TestPlayerPlar(t *testing.T) {
 			assert.False(t, execCommandCalled, test.msg)
 			assert.False(t, cmdRunCalled, test.msg)
 		}
-
+		assert.Equal(t, test.isSleepCalled, sleepCalled, test.msg)
 	}
 }
