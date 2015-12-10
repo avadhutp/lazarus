@@ -226,3 +226,99 @@ func TestPlayerDownload(t *testing.T) {
 		assert.Equal(t, test.isLogErrorCalled, logErrorCalled)
 	}
 }
+
+func TestPlayerPlar(t *testing.T) {
+	data := geddit.ChildData{
+		Domain:  "youtube.com",
+		URL:     "http://www.youtube.com/",
+		Title:   "Test song title",
+		Genre:   "Hip-hop",
+		ID:      "12345",
+		FileLoc: "/tmp/location/12345.mp3",
+		Status:  geddit.Downloaded,
+	}
+	el := geddit.Children{
+		Kind: "T3",
+		Data: data,
+	}
+
+	oldExecCommand := execCommand
+	oldCmdRun := cmdRun
+	oldSleep := sleep
+	oldTermuiSendCustomEvt := termuiSendCustomEvt
+	defer func() {
+		execCommand = oldExecCommand
+		cmdRun = oldCmdRun
+		sleep = oldSleep
+		termuiSendCustomEvt = oldTermuiSendCustomEvt
+	}()
+
+	cmd := &exec.Cmd{}
+	execCommandCalled := false
+	execCommand = func(command string, args ...string) *exec.Cmd {
+		execCommandCalled = true
+		return cmd
+	}
+
+	termuiSendCustomEvtCalled := []string{}
+	termuiSendCustomEvt = func(evt string, i interface{}) {
+		termuiSendCustomEvtCalled = append(termuiSendCustomEvtCalled, "called")
+	}
+
+	cmdRunCalled := false
+	cmdRun = func(c *exec.Cmd) error {
+		cmdRunCalled = true
+		return nil
+	}
+
+	sleepCalled := false
+	sleep = func(t time.Duration) {
+		sleepCalled = true
+	}
+
+	tests := []struct {
+		initialStatus   int
+		isPlayCmdCalled bool
+		msg             string
+	}{
+		{
+			initialStatus:   geddit.IsPlayed,
+			isPlayCmdCalled: false,
+			msg:             "Song is already played",
+		},
+		{
+			initialStatus:   geddit.NotDownloaded,
+			isPlayCmdCalled: false,
+			msg:             "Song download failed",
+		},
+		{
+			initialStatus:   geddit.Downloaded,
+			isPlayCmdCalled: true,
+			msg:             "Song has been downloaded, it should be played",
+		},
+	}
+
+	for _, test := range tests {
+		execCommandCalled = false
+		cmdRunCalled = false
+		termuiSendCustomEvtCalled = []string{}
+		sleepCalled = false
+
+		el.Data.Status = test.initialStatus
+		p := &Player{}
+		p.play(&el)
+
+		switch test.isPlayCmdCalled {
+		case true:
+			assert.Equal(t, geddit.IsPlayed, el.Data.Status, test.msg)
+			assert.Len(t, termuiSendCustomEvtCalled, 2)
+			assert.True(t, execCommandCalled, test.msg)
+			assert.True(t, cmdRunCalled, test.msg)
+		case false:
+			assert.Len(t, termuiSendCustomEvtCalled, 0)
+			assert.False(t, execCommandCalled, test.msg)
+			assert.False(t, cmdRunCalled, test.msg)
+		}
+
+	}
+}

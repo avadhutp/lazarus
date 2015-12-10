@@ -129,9 +129,9 @@ func (p *Player) runPlayCmd(el *geddit.Children) {
 	UpdatePlayer(*p)
 
 	args := append(p.playerArgs, el.Data.FileLoc)
-	cmd := exec.Command(p.playerCmd, args...)
+	cmd := execCommand(p.playerCmd, args...)
 	p.currSong = cmd
-	cmd.Run()
+	cmdRun(cmd)
 
 	el.FinishedPlaying()
 	UpdatePlayer(*p)
