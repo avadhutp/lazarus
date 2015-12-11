@@ -1,6 +1,9 @@
 # Lazarus [![Build Status](https://img.shields.io/travis/avadhutp/lazarus/master.svg?style=flat)](https://travis-ci.org/avadhutp/lazarus) [![CodeCov](https://img.shields.io/codecov/c/github/avadhutp/lazarus.svg?style=flat)](https://codecov.io/github/avadhutp/lazarus) [![GoDoc](https://godoc.org/github.com/avadhutp/lazarus?status.png)](https://godoc.org/github.com/avadhutp/lazarus)
 
-Lazarus plays the most recent *HOT* songs from `r/ListenToThis` subreddit.
+Lazarus plays the most recent *HOT* songs from any of music's subreddits:
+
+1. `r/ListenToThis`
+2. `r/music`
 
 ![screenshot](http://i.imgur.com/7g6Pscd.png)
 
