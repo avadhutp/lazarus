@@ -121,7 +121,7 @@ func (p *Player) getRedditURL() string {
 
 func (p *Player) startPlayback() {
 	for _, k := range p.GetKeys() {
-		p.play(p.Music[k])
+		playerPlay(p, p.Music[k])
 	}
 	playerRestart(p)
 }

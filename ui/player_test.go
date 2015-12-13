@@ -373,5 +373,33 @@ func TestPlayerStartDownloads(t *testing.T) {
 
 	player.startDownloads()
 
-	assert.Equal(t, []string{el.Data.URL}, callList, "All songs in the music list should be sent to Player.download()")
+	assert.Equal(t, []string{el.Data.URL}, callList, "All songs in the music list should be sent to Player.download")
+}
+
+func TestPlayerStartPlayback(t *testing.T) {
+	oldPlayerPlay := playerPlay
+	oldPlayerRestart := playerRestart
+	defer func() {
+		playerRestart = oldPlayerRestart
+		playerPlay = oldPlayerPlay
+	}()
+
+	callList := []string{}
+	playerPlay = func(p *Player, el *geddit.Children) {
+		callList = append(callList, el.Data.FileLoc)
+	}
+
+	playerRestartCalled := false
+	playerRestart = func(p *Player) {
+		playerRestartCalled = true
+	}
+
+	el := getTestMusic()
+	player := new(Player)
+	player.Music = map[string]*geddit.Children{"12345": &el}
+
+	player.startPlayback()
+
+	assert.Equal(t, []string{el.Data.FileLoc}, callList, "All songs in the music list should be sent to Player.play")
+	assert.True(t, playerRestartCalled)
 }
