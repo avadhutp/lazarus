@@ -24,9 +24,10 @@ Lazarus plays the most recent *HOT* songs from any of music's subreddits:
 
 # Settings
 Lazarus works off of an `ini` file. This supports the following configs:
-
-1. `tmp_location`: The location where Lazarus can download temporary mp3s. Ideally, this location should be absolute as Lazarus does not deal well with relative paths currently. Also, the trailing slash is necessary. Example, `tmp_location = /tmp/lazarus/`.
-2. `player_cmd`: The command-line music player to use for playback. This needs to be installed on your system and accessible by the current user. Try to use one which supports a wide range of formats suchas `m4a`, `mp3`, `opus`, etc. Also, specify the required arguments, if any, along with the command. For example, `player_cmd = cvlc --play-and-exit`.
+Setting | Description | Example
+--------|-------------|--------
+`tmp_location` | The location where Lazarus can download temporary mp3s. Ideally, this location should be absolute as Lazarus does not deal well with relative paths currently. Also, the trailing slash is necessary. | `tmp_location = /tmp/lazarus/`
+`player_cmd` | The command-line music player to use for playback. This needs to be installed on your system and accessible by the current user. Try to use one which supports a wide range of formats suchas `m4a`, `mp3`, `opus`, etc. Also, specify the required arguments, if any, along with the command. | `player_cmd = cvlc --play-and-exit`
 
 # Keyboard shortcuts
 Shortcut | Purpose
