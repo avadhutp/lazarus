@@ -28,6 +28,7 @@ var (
 	playerStartDownloads func(*Player)
 	playerStartPlayback  func(*Player)
 	playerDownload       func(*Player, *geddit.Children)
+	playerPlay           func(*Player, *geddit.Children)
 )
 
 func init() {
@@ -35,6 +36,8 @@ func init() {
 	playerRestart = (*Player).restart
 	playerStartDownloads = (*Player).startDownloads
 	playerStartPlayback = (*Player).startPlayback
+	playerDownload = (*Player).download
+	playerPlay = (*Player).play
 }
 
 const (
@@ -151,7 +154,7 @@ func (p *Player) runPlayCmd(el *geddit.Children) {
 
 func (p *Player) startDownloads() {
 	for _, k := range p.GetKeys() {
-		p.download(p.Music[k])
+		playerDownload(p, p.Music[k])
 	}
 }
 
