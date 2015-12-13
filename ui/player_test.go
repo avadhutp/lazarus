@@ -342,3 +342,35 @@ func TestPlayerGetRedditURL(t *testing.T) {
 
 	assert.Equal(t, "http://www.reddit.com/r/listentothis/hot.json?sort=hot&after=afterhash", actual)
 }
+
+func TestPlayerRestart(t *testing.T) {
+	oldPlayerStart := playerStart
+	defer func() { playerStart = oldPlayerStart }()
+
+	data := geddit.ChildData{
+		Domain: "youtube.com",
+		URL:    "http://www.youtube.com/",
+		Title:  "Test song title",
+		Genre:  "Hip-hop",
+		ID:     "12345",
+	}
+	el := geddit.Children{
+		Kind: "T3",
+		Data: data,
+	}
+
+	playerStartCalled := false
+	playerStart = func(p *Player) {
+		playerStartCalled = true
+	}
+
+	player := new(Player)
+	player.Music = map[string]*geddit.Children{"12345": &el}
+	player.keys = []string{"12345"}
+
+	player.restart()
+
+	assert.Empty(t, player.Music)
+	assert.Empty(t, player.keys)
+	assert.True(t, playerStartCalled)
+}

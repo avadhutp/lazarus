@@ -11,7 +11,6 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-
 	"github.com/avadhutp/lazarus/geddit"
 )
 
@@ -23,7 +22,15 @@ var (
 	cmdRun        = (*exec.Cmd).Run
 	logError      = log.Error
 	ioutilReaddir = ioutil.ReadDir
+
+	playerRestart func(*Player)
+	playerStart   func(*Player)
 )
+
+func init() {
+	playerStart = (*Player).Start
+	playerRestart = (*Player).restart
+}
 
 const (
 	waitBeforeStartingPlayback = 5 * time.Second
@@ -97,7 +104,7 @@ func (p *Player) restart() {
 	p.Music = make(map[string]*geddit.Children)
 	p.keys = make([]string, 0)
 
-	p.Start()
+	playerStart(p)
 }
 
 func (p *Player) getRedditURL() string {
@@ -108,7 +115,7 @@ func (p *Player) startPlayback() {
 	for _, k := range p.GetKeys() {
 		p.play(p.Music[k])
 	}
-	p.restart()
+	playerRestart(p)
 }
 
 func (p *Player) play(el *geddit.Children) {
