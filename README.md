@@ -24,6 +24,7 @@ Lazarus plays the most recent *HOT* songs from any of music's subreddits:
 
 # Settings
 Lazarus works off of an `ini` file. This supports the following configs:
+
 Setting | Description | Example
 --------|-------------|--------
 `tmp_location` | The location where Lazarus can download temporary mp3s. Ideally, this location should be absolute as Lazarus does not deal well with relative paths currently. Also, the trailing slash is necessary. | `tmp_location = /tmp/lazarus/`
