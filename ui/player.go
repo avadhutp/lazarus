@@ -23,13 +23,18 @@ var (
 	logError      = log.Error
 	ioutilReaddir = ioutil.ReadDir
 
-	playerRestart func(*Player)
-	playerStart   func(*Player)
+	playerRestart        func(*Player)
+	playerStart          func(*Player)
+	playerStartDownloads func(*Player)
+	playerStartPlayback  func(*Player)
+	playerDownload       func(*Player, *geddit.Children)
 )
 
 func init() {
 	playerStart = (*Player).Start
 	playerRestart = (*Player).restart
+	playerStartDownloads = (*Player).startDownloads
+	playerStartPlayback = (*Player).startPlayback
 }
 
 const (

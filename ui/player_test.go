@@ -41,6 +41,21 @@ func (t *TestFileInfo) Sys() interface{} {
 	return false
 }
 
+func getTestMusic() geddit.Children {
+	data := geddit.ChildData{
+		Domain: "youtube.com",
+		URL:    "http://www.youtube.com/",
+		Title:  "Test song title",
+		Genre:  "Hip-hop",
+		ID:     "12345",
+	}
+
+	return geddit.Children{
+		Kind: "T3",
+		Data: data,
+	}
+}
+
 func TestNewPlayer(t *testing.T) {
 	cfg := &Cfg{}
 	cfg.PlayerCmd = "testcmd testargs"
@@ -123,17 +138,7 @@ func TestPlayerSkip(t *testing.T) {
 }
 
 func TestPlayerDownload(t *testing.T) {
-	data := geddit.ChildData{
-		Domain: "youtube.com",
-		URL:    "http://www.youtube.com/",
-		Title:  "Test song title",
-		Genre:  "Hip-hop",
-		ID:     "12345",
-	}
-	el := geddit.Children{
-		Kind: "T3",
-		Data: data,
-	}
+	el := getTestMusic()
 
 	oldExecCommand := execCommand
 	oldCmdRun := cmdRun
@@ -228,19 +233,7 @@ func TestPlayerDownload(t *testing.T) {
 }
 
 func TestPlayerPlar(t *testing.T) {
-	data := geddit.ChildData{
-		Domain:  "youtube.com",
-		URL:     "http://www.youtube.com/",
-		Title:   "Test song title",
-		Genre:   "Hip-hop",
-		ID:      "12345",
-		FileLoc: "/tmp/location/12345.mp3",
-		Status:  geddit.Downloaded,
-	}
-	el := geddit.Children{
-		Kind: "T3",
-		Data: data,
-	}
+	el := getTestMusic()
 
 	oldExecCommand := execCommand
 	oldCmdRun := cmdRun
@@ -347,17 +340,7 @@ func TestPlayerRestart(t *testing.T) {
 	oldPlayerStart := playerStart
 	defer func() { playerStart = oldPlayerStart }()
 
-	data := geddit.ChildData{
-		Domain: "youtube.com",
-		URL:    "http://www.youtube.com/",
-		Title:  "Test song title",
-		Genre:  "Hip-hop",
-		ID:     "12345",
-	}
-	el := geddit.Children{
-		Kind: "T3",
-		Data: data,
-	}
+	el := getTestMusic()
 
 	playerStartCalled := false
 	playerStart = func(p *Player) {
