@@ -16,6 +16,7 @@ import (
 
 // DI
 var (
+	gedditGet     = geddit.Get
 	pKill         = (*os.Process).Kill
 	sleep         = time.Sleep
 	execCommand   = exec.Command
@@ -80,12 +81,12 @@ type Player struct {
 
 // Start Re/starts the entire download & play cycle when called; will generally be issued in main() or when the current *Player.startPlayback() loop is done
 func (p *Player) Start() {
-	p.after, p.Music = geddit.Get(p.getRedditURL())
+	p.after, p.Music = gedditGet(p.getRedditURL())
 	FireFinishedRedditDownload(*p)
 
-	go p.startDownloads()
+	go playerStartDownloads(p)
 	sleep(waitBeforeStartingPlayback)
-	go p.startPlayback()
+	go playerStartPlayback(p)
 }
 
 // Skip skips the currently playing song

@@ -56,6 +56,67 @@ func getTestMusic() geddit.Children {
 	}
 }
 
+func TestPlayerStart(t *testing.T) {
+	oldGedditGet := gedditGet
+	oldPlayerStartDownloads := playerStartDownloads
+	oldPlayerStartPlayback := playerStartPlayback
+	oldSleep := sleep
+	oldTermuiSendCustomEvt := termuiSendCustomEvt
+
+	defer func() {
+		gedditGet = oldGedditGet
+		playerStartDownloads = oldPlayerStartDownloads
+		playerStartPlayback = oldPlayerStartPlayback
+		sleep = oldSleep
+		termuiSendCustomEvt = oldTermuiSendCustomEvt
+	}()
+
+	el := getTestMusic()
+	ret := map[string]*geddit.Children{
+		"12345": &el,
+	}
+	gedditGet = func(rURL string) (string, map[string]*geddit.Children) {
+		return "after-test", ret
+	}
+
+	testChannel := make(chan bool)
+
+	startDownloadsCalled := false
+	playerStartDownloads = func(p *Player) {
+		testChannel <- true
+		startDownloadsCalled = true
+	}
+
+	startPlaybackCalled := false
+	playerStartPlayback = func(p *Player) {
+		testChannel <- true
+		startPlaybackCalled = true
+	}
+
+	sleepCalled := false
+	sleep = func(t time.Duration) {
+		sleepCalled = true
+	}
+
+	var evtFired string
+	termuiSendCustomEvt = func(evt string, data interface{}) {
+		evtFired = evt
+	}
+
+	p := new(Player)
+	p.Start()
+
+	assert.Equal(t, "after-test", p.after)
+	assert.Equal(t, ret, p.Music)
+	assert.Equal(t, finishedRedditDownload, evtFired)
+	assert.True(t, sleepCalled)
+
+	<-testChannel
+	<-testChannel
+	assert.True(t, startDownloadsCalled)
+	assert.True(t, startPlaybackCalled)
+}
+
 func TestNewPlayer(t *testing.T) {
 	cfg := &Cfg{}
 	cfg.PlayerCmd = "testcmd testargs"
