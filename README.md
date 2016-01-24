@@ -35,3 +35,4 @@ Shortcut | Purpose
 ---------|--------
 q | Quit Lazarus
 s | Skip song
+b | Bookmark song
