@@ -473,3 +473,18 @@ func TestPlayerStartPlayback(t *testing.T) {
 	assert.Equal(t, []string{el.Data.FileLoc}, callList, "All songs in the music list should be sent to Player.play")
 	assert.True(t, playerRestartCalled)
 }
+
+func TestPlayerDeleteFile(t *testing.T) {
+	oldOSRemove := osRemove
+	defer func() { osRemove = oldOSRemove }()
+
+	osRemoveCalled := false
+	osRemove = func(loc string) error {
+		osRemoveCalled = true
+		return nil
+	}
+
+	deleteFile("/file/location")
+
+	assert.True(t, osRemoveCalled)
+}

@@ -23,6 +23,7 @@ var (
 	cmdRun        = (*exec.Cmd).Run
 	logError      = log.Error
 	ioutilReaddir = ioutil.ReadDir
+	osRemove      = os.Remove
 
 	playerRestart        func(*Player)
 	playerStart          func(*Player)
@@ -32,7 +33,7 @@ var (
 	playerPlay           func(*Player, *geddit.Children)
 
 	deleteFile = func(loc string) {
-		if err := os.Remove(loc); err != nil {
+		if err := osRemove(loc); err != nil {
 			logError(fmt.Sprintf("Cannot delete file: %s; error encountered: %s", loc, err.Error()))
 		}
 	}
