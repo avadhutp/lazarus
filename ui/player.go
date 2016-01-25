@@ -219,3 +219,9 @@ func expandYoutubeURL(URL string) string {
 
 	return URL
 }
+
+func deleteFile(loc string) {
+	if err := os.Remove(loc); err != nil {
+		logError(fmt.Sprintf("Cannot delete file: %s; error encountered: %s", loc, err.Error()))
+	}
+}
