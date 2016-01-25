@@ -293,7 +293,7 @@ func TestPlayerDownload(t *testing.T) {
 	}
 }
 
-func TestPlayerPlar(t *testing.T) {
+func TestPlayerPlay(t *testing.T) {
 	el := getTestMusic()
 
 	oldExecCommand := execCommand
