@@ -498,9 +498,16 @@ func TestPlayerDeleteFile(t *testing.T) {
 			isLogErrCalled: true,
 			msg:            "Error encountered while trying to delete file",
 		},
+		{
+			err:            nil,
+			isLogErrCalled: false,
+			msg:            "No error encountered; so no logError should be called",
+		},
 	}
 
 	for _, test := range tests {
+		logErrorCalled = false
+
 		osRemove = func(loc string) error {
 			return test.err
 		}
