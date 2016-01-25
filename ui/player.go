@@ -149,6 +149,7 @@ func (p *Player) runPlayCmd(el *geddit.Children) {
 	p.currSong = cmd
 	cmdRun(cmd)
 
+	deleteFile(el.Data.FileLoc)
 	el.FinishedPlaying()
 	UpdatePlayer(*p)
 }
