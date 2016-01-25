@@ -300,11 +300,13 @@ func TestPlayerPlay(t *testing.T) {
 	oldCmdRun := cmdRun
 	oldSleep := sleep
 	oldTermuiSendCustomEvt := termuiSendCustomEvt
+	oldDeleteFile := deleteFile
 	defer func() {
 		execCommand = oldExecCommand
 		cmdRun = oldCmdRun
 		sleep = oldSleep
 		termuiSendCustomEvt = oldTermuiSendCustomEvt
+		deleteFile = oldDeleteFile
 	}()
 
 	cmd := &exec.Cmd{}
@@ -323,6 +325,11 @@ func TestPlayerPlay(t *testing.T) {
 	cmdRun = func(c *exec.Cmd) error {
 		cmdRunCalled = true
 		return nil
+	}
+
+	deleteFileCalled := false
+	deleteFile = func(loc string) {
+		deleteFileCalled = true
 	}
 
 	sleepCalled := false
@@ -366,6 +373,7 @@ func TestPlayerPlay(t *testing.T) {
 	for _, test := range tests {
 		execCommandCalled = false
 		cmdRunCalled = false
+		deleteFileCalled = false
 		termuiSendCustomEvtCalled = []string{}
 		sleepCalled = false
 
@@ -379,6 +387,7 @@ func TestPlayerPlay(t *testing.T) {
 			assert.Len(t, termuiSendCustomEvtCalled, 2)
 			assert.True(t, execCommandCalled, test.msg)
 			assert.True(t, cmdRunCalled, test.msg)
+			assert.True(t, deleteFileCalled, test.msg)
 		case false:
 			assert.Len(t, termuiSendCustomEvtCalled, 0)
 			assert.False(t, execCommandCalled, test.msg)

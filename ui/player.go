@@ -30,6 +30,12 @@ var (
 	playerStartPlayback  func(*Player)
 	playerDownload       func(*Player, *geddit.Children)
 	playerPlay           func(*Player, *geddit.Children)
+
+	deleteFile = func(loc string) {
+		if err := os.Remove(loc); err != nil {
+			logError(fmt.Sprintf("Cannot delete file: %s; error encountered: %s", loc, err.Error()))
+		}
+	}
 )
 
 func init() {
@@ -219,10 +225,4 @@ func expandYoutubeURL(URL string) string {
 	}
 
 	return URL
-}
-
-func deleteFile(loc string) {
-	if err := os.Remove(loc); err != nil {
-		logError(fmt.Sprintf("Cannot delete file: %s; error encountered: %s", loc, err.Error()))
-	}
 }
