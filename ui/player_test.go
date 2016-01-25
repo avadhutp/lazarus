@@ -476,15 +476,38 @@ func TestPlayerStartPlayback(t *testing.T) {
 
 func TestPlayerDeleteFile(t *testing.T) {
 	oldOSRemove := osRemove
-	defer func() { osRemove = oldOSRemove }()
+	oldLogError := logError
 
-	osRemoveCalled := false
-	osRemove = func(loc string) error {
-		osRemoveCalled = true
-		return nil
+	defer func() {
+		osRemove = oldOSRemove
+		logError = oldLogError
+	}()
+
+	logErrorCalled := false
+	logError = func(...interface{}) {
+		logErrorCalled = true
 	}
 
-	deleteFile("/file/location")
+	tests := []struct {
+		err            error
+		isLogErrCalled bool
+		msg            string
+	}{
+		{
+			err:            errors.New("Sample error"),
+			isLogErrCalled: true,
+			msg:            "Error encountered while trying to delete file",
+		},
+	}
 
-	assert.True(t, osRemoveCalled)
+	for _, test := range tests {
+		osRemove = func(loc string) error {
+			return test.err
+		}
+
+		deleteFile("/file/location")
+
+		assert.Equal(t, test.isLogErrCalled, logErrorCalled, test.msg)
+	}
+
 }
