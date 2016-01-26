@@ -2,7 +2,6 @@ package ui
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"os/exec"
 	"testing"
@@ -159,33 +158,45 @@ func TestExpandYoutubeURL(t *testing.T) {
 
 func TestPlayerSkip(t *testing.T) {
 	oldPKill := pKill
-	defer func() { pKill = oldPKill }()
+	oldDeleteFile := deleteFile
+	defer func() {
+		pKill = oldPKill
+		deleteFile = oldDeleteFile
+	}()
 
 	pKillCalled := false
 	pKill = func(p *os.Process) error {
-		fmt.Println(fmt.Sprintf("Process: %d", p.Pid))
 		pKillCalled = true
 		return nil
+	}
+
+	deleteFileCalled := false
+	deleteFile = func(string) {
+		deleteFileCalled = true
 	}
 
 	p := &os.Process{}
 	testCmd := &exec.Cmd{}
 	testCmd.Process = p
+	testCmd.Args = []string{"val1", "/file/loc"}
 
 	tests := []struct {
-		initialVal      *exec.Cmd
-		shouldCallPKill bool
-		msg             string
+		initialVal       *exec.Cmd
+		shouldCallPKill  bool
+		shouldDeleteFile bool
+		msg              string
 	}{
 		{
-			initialVal:      nil,
-			shouldCallPKill: false,
-			msg:             "No current song, so do not call pKill",
+			initialVal:       nil,
+			shouldCallPKill:  false,
+			shouldDeleteFile: false,
+			msg:              "No current song, so do not call pKill",
 		},
 		{
-			initialVal:      testCmd,
-			shouldCallPKill: true,
-			msg:             "Current song playing, so should call pKill",
+			initialVal:       testCmd,
+			shouldCallPKill:  true,
+			shouldDeleteFile: true,
+			msg:              "Current song playing, so should call pKill",
 		},
 	}
 
@@ -195,6 +206,7 @@ func TestPlayerSkip(t *testing.T) {
 		sut.Skip()
 
 		assert.Equal(t, test.shouldCallPKill, pKillCalled, test.msg)
+		assert.Equal(t, test.shouldDeleteFile, deleteFileCalled, test.msg)
 	}
 }
 
