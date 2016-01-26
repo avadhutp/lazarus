@@ -201,6 +201,9 @@ func TestPlayerSkip(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		pKillCalled = false
+		deleteFileCalled = false
+
 		sut := Player{}
 		sut.currSong = test.initialVal
 		sut.Skip()
