@@ -96,10 +96,14 @@ func (p *Player) Start() {
 	go playerStartPlayback(p)
 }
 
-// Skip skips the currently playing song
+// Skip skips the currently playing song & deletes it from the tmp location
 func (p *Player) Skip() {
 	if p.currSong != nil {
 		pKill(p.currSong.Process)
+
+		args := p.currSong.Args
+		file := args[len(args)-1]
+		deleteFile(file)
 	}
 }
 
