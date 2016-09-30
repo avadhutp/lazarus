@@ -6,9 +6,9 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/avadhutp/lazarus/ui"
-	"github.com/codegangsta/cli"
 	"github.com/gizak/termui"
 	"github.com/go-ini/ini"
+	"github.com/urfave/cli"
 )
 
 const (

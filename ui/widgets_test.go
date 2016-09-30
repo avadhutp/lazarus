@@ -2,14 +2,11 @@ package ui
 
 import (
 	"encoding/json"
-
-	"github.com/stretchr/testify/assert"
-
-	"github.com/gizak/termui"
+	"testing"
 
 	"github.com/avadhutp/lazarus/geddit"
-
-	"testing"
+	"github.com/gizak/termui"
+	"github.com/stretchr/testify/assert"
 )
 
 var testStr = `

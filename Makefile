@@ -1,15 +1,12 @@
-PKGS := \
-	ui \
-	geddit \
-	. \
+deps:
+	@echo Getting dependencies for lazarus
+	@go get github.com/mattn/gom
+	@gom install
 
-SOURCES := $(foreach pkg, $(PKGS), $(wildcard $(pkg)/*.go))
+test:
+	@echo Testing lazarus
+	@(go list ./... | grep -v -e /vendor/ | xargs -L1 gom test -cover || exit;)
 
-lint: $(SOURCES)
-	@echo Linting lazarus sources...
-	@go get -u github.com/golang/lint/golint
-	@go get -u github.com/GeertJohan/fgt
-	@$(foreach src, $(SOURCES), fgt golint ./... || exit;)
-
-test: 
-	@go test -v ./...
+lint:
+	@echo Linting lazarus sources
+	@(go list ./... | grep -v -e /vendor/ | xargs -L1 golint || exit;)

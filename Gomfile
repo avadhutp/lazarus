@@ -1,0 +1,6 @@
+gom 'github.com/urfave/cli', :tag => 'v1.18.1'
+gom 'github.com/gizak/termui', :tag => 'v2'
+gom 'github.com/Sirupsen/logrus', :tag => 'v0.10.0'
+gom 'github.com/go-ini/ini', :tag => 'v1.21.1'
+
+gom 'github.com/stretchr/testify/assert'
