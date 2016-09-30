@@ -1,8 +1,7 @@
 language: go
 
 go:
-    - 1.5.1
-    - tip
+    - 1.6
 
 before_install:
     - go get -t github.com/avadhutp/lazarus/ui
@@ -11,8 +10,13 @@ before_install:
     - go get github.com/onsi/gomega
     - go get github.com/onsi/ginkgo
     - go get golang.org/x/tools/cmd/cover
+    - go get github.com/golang/lint/golint
+    - go get github.com/GeertJohan/fgt
+    - go get github.com/mattn/gom
+
 
 script: 
+    - make deps
     - make lint
     - ./test.sh
 

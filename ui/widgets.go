@@ -41,7 +41,7 @@ func songsWidget() *termui.List {
 
 // quitWidget Displays the key required to quit
 func quitWidget() *termui.Par {
-	q := termui.NewPar("Press q to quit Lazarus.")
+	q := termui.NewPar("Press q to quit Lazarus; s to skip a song.")
 	q.TextFgColor = termui.ColorRed
 	q.Height = 1
 	q.Border = false

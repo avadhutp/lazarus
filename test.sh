@@ -5,7 +5,7 @@
 set -e
 echo "" > coverage.txt
 
-for d in $(find ./* -maxdepth 10 -type d); do
+for d in $(find ./* -maxdepth 10 -type d | grep -v vendor); do
     if ls $d/*.go &> /dev/null; then
         go test -coverprofile=profile.out -covermode=atomic $d
         if [ -f profile.out ]; then
